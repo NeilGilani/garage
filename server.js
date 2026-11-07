@@ -556,7 +556,7 @@ const server = http.createServer(async (req, res) => {
 });
 server.requestTimeout = 0; // ask_owner holds a request open until the owner answers
 server.on('error', err => {
-  console.error(err.code === 'EADDRINUSE' ? `\n  Port ${PORT} is busy. Try: PORT=4778 npx github:hilothefunnydog123-coder/garage\n` : err);
+  console.error(err.code === 'EADDRINUSE' ? `\n  Port ${PORT} is busy. Try: PORT=4778 npx github:NeilGilani/garage\n` : err);
   process.exit(1);
 });
 server.listen(PORT, HOST, () => {

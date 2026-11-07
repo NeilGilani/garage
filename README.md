@@ -10,7 +10,7 @@ Tell Otto your idea. Watch him build the brand, website, research, launch posts,
 ---
 
 ```bash
-npx github:hilothefunnydog123-coder/garage
+npx github:NeilGilani/garage
 ```
 
 You need [Node 20+](https://nodejs.org) and [Claude Code](https://docs.claude.com/en/docs/claude-code/setup), signed in. Garage opens at `http://localhost:4777`.
