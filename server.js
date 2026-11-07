@@ -11,14 +11,14 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const DATA = path.resolve(process.env.GARAGE_DATA || path.join(os.homedir(), 'Documents', 'Garage'));
+const DATA = dataDir();
 const PUBLIC = path.join(ROOT, 'public');
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.PORT || 4777);
 const CLAUDE = process.env.CLAUDE_BIN || 'claude';
-const SYSTEM = fs.readFileSync(path.join(ROOT, 'otto.md'), 'utf8');
+const SYSTEM = ['otto.md', 'site-craft.md'].map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n\n');
 const TOOLS = ['Read', 'Write', 'Edit', 'Glob', 'Grep', 'WebSearch', 'WebFetch'];
-const ASK_TOOL = 'mcp__garage__ask_owner';
+const GARAGE_TOOLS = ['mcp__garage__ask_owner', 'mcp__garage__look_at_site'];
 const POWER = {
   quick: { model: 'sonnet', effort: 'low' },
   standard: { model: 'sonnet', effort: 'medium' },
@@ -30,7 +30,7 @@ const AUTH = process.env.ANTHROPIC_API_KEY ? 'api-key' : 'plan';
 const NICE = {
   'site/index.html': 'the website', 'brand.json': 'the brand', 'logo.svg': 'the logo', 'plan.json': 'the plan',
   'posts.json': 'launch posts', 'outreach.json': 'outreach emails', 'research.md': 'the research report',
-  'deck.html': 'the deck', 'sheet.csv': 'the numbers',
+  'deck.html': 'the deck', 'sheet.csv': 'the numbers', 'design.md': 'the art direction',
 };
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -40,6 +40,17 @@ const MIME = {
 };
 
 fs.mkdirSync(DATA, { recursive: true });
+
+function dataDir() {
+  if (process.env.GARAGE_DATA) return path.resolve(process.env.GARAGE_DATA);
+  const home = path.join(os.homedir(), 'Garage');
+  // Disks are often case-insensitive, so ~/Garage can be this very checkout (cloned to ~/garage). Keep businesses out of the code.
+  try {
+    const a = fs.statSync(home), b = fs.statSync(ROOT);
+    if (a.ino === b.ino && a.dev === b.dev) return path.join(ROOT, 'businesses');
+  } catch { /* ~/Garage doesn't exist yet */ }
+  return home;
+}
 
 if (spawnSync(CLAUDE, ['--version'], { encoding: 'utf8' }).status !== 0) {
   console.error(`\n  Garage needs Claude Code, Otto's brain, and couldn't find \`${CLAUDE}\`.\n  Install it (https://docs.claude.com/en/docs/claude-code/setup), sign in once by running \`claude\`, then start Garage again.\n`);
@@ -165,24 +176,40 @@ const runs = new Map(); // slug -> run
 const asks = new Map(); // slug -> pending question waiting on the owner
 
 const PROMPTS = {
-  kickoff: idea => `New business. The owner's idea, in their words:
+  kickoff: (idea, variety = '') => `New business. The owner's idea, in their words:
 """
 ${idea}
 """
 
 Build it now, end to end. First write plan.json with these steps, all "todo", then work through them in order, marking each "doing" then "done":
 1. brand: brand.json and logo.svg
-2. site: site/index.html (copy logo.svg into site/ too)
+2. site: follow your site craft notes. Write design.md first, then site/index.html (copy logo.svg into site/ too), then look_at_site on desktop, mobile and overview and refine until it's portfolio-quality
 3. research: research.md (search the web, cite sources)
 4. posts: posts.json plus an image card for each post in posts/
 5. outreach: outreach.json (5 to 8 real organizations)
 6. deck: deck.html
 7. numbers: sheet.csv
 
+The deck and the post cards follow the same art direction as the site.
+${variety}
 If a real decision is the owner's to make before you start (for example, two very different directions for the name), ask it early. After the site is up, tell the owner in one short message. When everything is done, finish with 2 to 4 sentences: what you built, the one decision you need from them, and the best next move.`,
   next: () => `Keep going. Look at plan.json and what exists. If every step is done, add 1 to 3 new steps a sharp founder would do next for this business, then do the first one. Do one meaningful step, keep plan.json current, and report in 1 to 3 sentences.`,
   fix: () => `Check everything for problems and fix them: invalid JSON in any file, broken or unbalanced HTML, files the site or deck reference that don't exist, unreadable color contrast, layout that breaks on a 360px phone, leftover placeholder text. Report what you fixed in 1 to 3 sentences.`,
 };
+
+// What the other businesses in this Garage already look like, so every new site comes out different.
+function variety(slug) {
+  const others = fs.readdirSync(DATA).filter(s => s !== slug && isBusiness(s)).map(s => {
+    const brand = readJSON(path.join(bdir(s), 'brand.json'));
+    const design = readText(path.join(bdir(s), 'design.md')) || '';
+    const line = k => design.match(new RegExp('^[\\s>*-]*\\**' + k + '\\**\\s*:\\s*\\**\\s*(.+)$', 'im'))?.[1]?.trim();
+    if (!brand?.name) return null;
+    const fonts = [brand.fonts?.display, brand.fonts?.body].filter(Boolean).join(' + ');
+    const bits = [fonts && `fonts ${fonts}`, brand.colors?.primary && `primary ${brand.colors.primary}`, line('Concept') && `concept "${line('Concept')}"`, line('Signature') && `signature "${line('Signature')}"`, line('Archetype') && `archetype "${line('Archetype')}"`];
+    return `- ${brand.name}: ${bits.filter(Boolean).join('; ')}`;
+  }).filter(Boolean).slice(-8);
+  return others.length ? `\nOther businesses in this Garage already look like this. Pick a clearly different concept, signature, archetype, font pairing and palette:\n${others.join('\n')}\n` : '';
+}
 
 function settingsLine(s) {
   const q = s.questions === 'decide'
@@ -202,7 +229,7 @@ function startRun(slug, prompt, kind, { retry = false } = {}) {
       garage: {
         command: process.execPath,
         args: [path.join(ROOT, 'mcp.js')],
-        env: { GARAGE_URL: `http://${HOST}:${PORT}`, GARAGE_SLUG: slug },
+        env: { GARAGE_URL: `http://${HOST}:${PORT}`, GARAGE_SLUG: slug, GARAGE_DIR: bdir(slug) },
       },
     },
   });
@@ -213,7 +240,7 @@ function startRun(slug, prompt, kind, { retry = false } = {}) {
     // and none of the owner's own Claude Code settings, hooks, skills or MCP servers load.
     '--restricted', '--setting-sources', 'project', '--strict-mcp-config', '--mcp-config', mcpFile,
     '--disable-slash-commands',
-    '--tools', TOOLS.join(','), '--allowedTools', [...TOOLS, ASK_TOOL].join(' '),
+    '--tools', TOOLS.join(','), '--allowedTools', [...TOOLS, ...GARAGE_TOOLS].join(' '),
     '--permission-mode', 'dontAsk',
     '--model', power.model, '--effort', power.effort,
     '--max-budget-usd', String(Math.max(0.25, Number(s.budget) || 3)),
@@ -410,7 +437,7 @@ route('POST', /^\/api\/businesses$/, async (req, res) => {
     settings: { ...DEFAULT_SETTINGS, ...(settings || {}) },
   });
   emit(slug, { t: 'user', text: idea.trim() });
-  startRun(slug, PROMPTS.kickoff(idea.trim()), 'kickoff');
+  startRun(slug, PROMPTS.kickoff(idea.trim(), variety(slug)), 'kickoff');
   send(res, 201, { slug });
 });
 
@@ -438,7 +465,7 @@ route('POST', /^\/api\/b\/([a-z0-9-]+)\/run$/, async (req, res, slug) => {
   if (runs.has(slug)) return send(res, 409, { error: 'Otto is already working. Stop him first or wait.' });
   let prompt;
   if (kind === 'kickoff') {
-    prompt = PROMPTS.kickoff(meta(slug).idea);
+    prompt = PROMPTS.kickoff(meta(slug).idea, variety(slug));
   } else if (kind === 'chat') {
     if (!message.trim()) return send(res, 400, { error: 'Empty message.' });
     emit(slug, { t: 'user', text: message.trim() });
@@ -511,6 +538,13 @@ route('POST', /^\/api\/b\/([a-z0-9-]+)\/review$/, async (req, res, slug) => {
   writeJSON(f, list);
   emit(slug, { t: 'files', path: `${file}.json` }, false);
   send(res, 200, item);
+});
+
+route('GET', /^\/api\/b\/([a-z0-9-]+)\/shot\/(desktop|mobile|overview)$/, (req, res, slug) => {
+  const file = path.join(gdir(slug), 'shots', `${req.url.match(/shot\/(\w+)/)[1]}.png`);
+  if (!exists(file)) return send(res, 404, { error: 'No screenshot yet.' });
+  res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'no-store' });
+  fs.createReadStream(file).pipe(res);
 });
 
 route('POST', /^\/api\/b\/([a-z0-9-]+)\/publish$/, async (req, res, slug) => {

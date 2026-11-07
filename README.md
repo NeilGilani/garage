@@ -48,7 +48,7 @@ Each run is sandboxed. Otto's file tools are locked to that business's folder (`
 
 ## Your files
 
-Every business is a plain folder in `~/Documents/Garage`:
+Every business is a plain folder in `~/Garage`:
 
 ```
 brand.json   logo.svg   site/index.html   research.md
@@ -62,7 +62,7 @@ Edit them by hand, put them in git, take them anywhere.
 | Env var | Default | |
 |---|---|---|
 | `PORT` | `4777` | Port for the local app |
-| `GARAGE_DATA` | `~/Documents/Garage` | Where businesses are stored |
+| `GARAGE_DATA` | `~/Garage` | Where businesses are stored |
 | `GARAGE_NO_OPEN` | | Set it to skip opening the browser |
 | `CLAUDE_BIN` | `claude` | Path to the Claude Code CLI |
 
@@ -70,7 +70,7 @@ In the app, **Power** picks the model (Quick and Standard use Sonnet; Max uses O
 
 ## How it works
 
-`server.js` is a dependency-free Node server. For every run it spawns `claude -p` in the business folder with a tool allowlist and Otto's brief (`otto.md`), and streams Claude Code's JSON events to the browser over SSE. The browser turns each tool call into a window. `mcp.js` is a tiny MCP server that gives Otto an `ask_owner` tool: it long-polls the app until you answer.
+`server.js` is a dependency-free Node server. For every run it spawns `claude -p` in the business folder with a tool allowlist and Otto's brief (`otto.md`), and streams Claude Code's JSON events to the browser over SSE. The browser turns each tool call into a window. `mcp.js` is a tiny MCP server with two tools: `ask_owner`, which long-polls the app until you answer, and `look_at_site`, which screenshots a page in your local headless Chrome so Otto can see what he built and refine it. `site-craft.md` is the design brief he works from.
 
 ## Not yet
 

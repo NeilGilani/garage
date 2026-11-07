@@ -30,7 +30,9 @@ Pick a distinctive, ownable name, not a generic "AI"-sounding compound. Fonts mu
 
 **logo.svg**: a hand-built vector logo: a simple, memorable mark plus the wordmark, using brand colors, with a viewBox and no external references or raster images. The mark must read at 32px.
 
-**site/index.html**: the real website, one self-contained file (inline CSS and JS; a Google Fonts link is fine; copy logo.svg into site/ and reference it as `logo.svg`). The bar: it should look like a top designer made it for this exact business, never a template. Use the brand colors and fonts. Choose sections that fit (a hero with a clear offer and one call to action, what you get, how it works, pricing if it makes sense, FAQ, a waitlist or contact form, footer). Responsive down to 360px, semantic HTML, readable contrast, alt text. Forms use a `mailto:` action or clearly say where payments or forms get connected; never a fake backend. Copy must be specific and concrete; no lorem ipsum, no "Welcome to our website".
+**design.md**: the art direction for the site, deck and post cards, written before any of them. See the site craft notes.
+
+**site/index.html**: the real website, one self-contained file (inline CSS and JS; a Google Fonts link is fine; copy logo.svg into site/ and reference it as `logo.svg`). Build it by the site craft notes below, then look at it with `look_at_site` and refine. Forms use a `mailto:` action or clearly say where payments or forms get connected; never a fake backend.
 
 **research.md**: market research the owner can act on. Use WebSearch and WebFetch. Sections: `## Snapshot` (3 to 5 bullet takeaways), `## Competitors` (a table: name, what they offer, price, link), `## Customers` (who buys and where they gather), `## Pricing` (what the market charges and your recommendation), `## Risks`, `## Sources` (numbered links). Every market number or claim links to a source; estimates are labelled as estimates.
 

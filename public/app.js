@@ -70,7 +70,7 @@ const NET = { x: 'X', twitter: 'X', linkedin: 'LinkedIn', instagram: 'Instagram'
 
 function appForPath(p = '') {
   if (!p) return null;
-  if (p.startsWith('site/')) return 'build';
+  if (p.startsWith('site/') || p === 'design.md') return 'build';
   if (p === 'brand.json' || p === 'logo.svg') return 'brand';
   if (p === 'posts.json' || p.startsWith('posts/')) return 'social';
   if (p === 'outreach.json') return 'outreach';
@@ -83,6 +83,7 @@ function appForPath(p = '') {
 function appForTool(ev) {
   if (ev.name === 'WebSearch') return 'research';
   if (ev.name === 'WebFetch') return 'browser';
+  if (ev.name === 'mcp__garage__look_at_site') return ev.input?.page === 'deck.html' ? 'deck' : 'build';
   if (ev.name === 'Write' || ev.name === 'Edit') return appForPath(ev.path);
   return null;
 }
@@ -96,6 +97,7 @@ function labelFor(ev) {
     case 'Read': return `Looking at ${what}`;
     case 'Glob': case 'Grep': return 'Looking through the files';
     case 'mcp__garage__ask_owner': return 'Asking you a question';
+    case 'mcp__garage__look_at_site': return { mobile: 'Looking at it on a phone', overview: 'Looking at the whole page' }[ev.input?.view] || 'Looking at it on desktop';
     default: return 'Working';
   }
 }
@@ -110,7 +112,7 @@ function fresh() {
     research: { searches: [], tab: 'live' },
     browser: { pages: [], active: null },
     build: { file: 'site/index.html', typing: false, anim: 0, device: 'desktop', showCode: true, v: Date.now(), loaded: false },
-    busyApp: null, v: Date.now(), deckV: Date.now(),
+    busyApp: null, v: Date.now(), deckV: Date.now(), looks: {},
   };
 }
 
@@ -357,6 +359,7 @@ function apply(ev, live) {
       const label = labelFor(ev);
       S.statusText = label;
       if (ev.name === 'WebSearch') S.research.searches.push({ id: ev.id, query: ev.input?.query || '', pending: true, links: [] });
+      if (ev.name === 'mcp__garage__look_at_site') S.looks[ev.id] = ev.input?.view || 'desktop';
       if (ev.name === 'WebFetch') {
         S.browser.pages.push({ id: ev.id, url: ev.input?.url || '', goal: ev.input?.prompt || '', pending: true, text: '' });
         S.browser.active = ev.id;
@@ -384,6 +387,7 @@ function apply(ev, live) {
         const p = S.browser.pages.find(x => x.id === ev.id);
         if (p) { p.pending = false; p.text = ev.text; p.failed = !ev.ok; }
       }
+      if (live && ev.name === 'mcp__garage__look_at_site' && ev.ok) showLook(S.looks[ev.id]);
       if (live && ev.name === 'WebSearch') renderApp('research');
       if (live && ev.name === 'WebFetch') renderApp('browser');
       break;
@@ -736,7 +740,7 @@ APPS.build.mount = w => {
         <a class="tool-btn" data-link="zip">Download</a>
         <button class="tool-btn accent" data-act="publish">Publish</button>
       </div>
-      <div class="build-split"><pre class="code"></pre><div class="preview"><div class="flash"></div></div></div>
+      <div class="build-split"><pre class="code"></pre><div class="preview"><div class="flash"></div><div class="look" hidden><img alt="What Otto sees"><span></span></div></div></div>
     </div>`;
   w.body.onclick = e => {
     const d = e.target.closest('[data-d]')?.dataset.d;
@@ -781,6 +785,18 @@ APPS.build.render = w => {
     }
   }
 };
+// When Otto screenshots the site, show the owner the same picture for a moment.
+function showLook(view = 'desktop') {
+  const w = wm.wins.build;
+  if (!w) return;
+  const look = $('.look', w.body);
+  $('img', look).src = `/api/b/${S.slug}/shot/${view}?v=${Date.now()}`;
+  $('span', look).textContent = `What Otto sees · ${{ mobile: 'phone', overview: 'whole page' }[view] || 'desktop'}`;
+  look.hidden = false;
+  clearTimeout(look.t);
+  look.t = setTimeout(() => { look.hidden = true; }, 3800);
+}
+
 function buildShowCode(ev) {
   const w = wm.wins.build;
   if (!w) return;
