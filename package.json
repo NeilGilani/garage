@@ -11,6 +11,7 @@
     "server.js",
     "mcp.js",
     "otto.md",
+    "site-craft.md",
     "public/"
   ],
   "scripts": {
@@ -24,5 +25,14 @@
     "url": "git+https://github.com/NeilGilani/garage.git"
   },
   "homepage": "https://garage-otto.pages.dev/",
-  "keywords": ["ai", "agent", "ai-employee", "claude", "claude-code", "startup", "website-builder", "open-source"]
+  "keywords": [
+    "ai",
+    "agent",
+    "ai-employee",
+    "claude",
+    "claude-code",
+    "startup",
+    "website-builder",
+    "open-source"
+  ]
 }
