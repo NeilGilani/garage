@@ -1,0 +1,28 @@
+{
+  "name": "garage-otto",
+  "version": "0.1.0",
+  "description": "An open-source AI employee that builds your business: brand, website, research, launch posts, outreach and pitch deck, live on your own machine.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "garage": "server.js"
+  },
+  "files": [
+    "server.js",
+    "mcp.js",
+    "otto.md",
+    "public/"
+  ],
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilothefunnydog123-coder/garage.git"
+  },
+  "homepage": "https://garage-otto.pages.dev/",
+  "keywords": ["ai", "agent", "ai-employee", "claude", "claude-code", "startup", "website-builder", "open-source"]
+}

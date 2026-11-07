@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rinse &amp; Roam | Mobile dog grooming in San Jose</title>
+<meta name="description" content="A grooming van that parks at your curb in San Jose. One dog at a time, no cages, no salon drop-off.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&display=swap" rel="stylesheet">
+<style>
+:root{--p:#0F5E6B;--s:#F2B544;--a:#E4572E;--bg:#FBF6EC;--ink:#1B2B30;--line:#e5dcc8}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:17px}
+h1,h2,h3{font-family:'Fraunces',serif;line-height:1.1;font-weight:900}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+header img{height:46px;display:block}
+.btn{display:inline-block;background:var(--a);color:#fff;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:999px;border:0;font:700 17px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 4px 0 #a93a1b}
+.btn:hover{transform:translateY(2px);box-shadow:0 2px 0 #a93a1b}
+.btn.sm{padding:10px 20px;font-size:15px}
+.hero{background:var(--p);color:var(--bg);position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:30px;padding-bottom:70px}
+.hero header img{filter:none}
+.hero .logo-bg{background:var(--bg);border-radius:14px;padding:6px 14px}
+h1{font-size:clamp(40px,6vw,72px);margin-bottom:20px}
+h1 em{font-style:normal;color:var(--s)}
+.hero p.lead{font-size:20px;max-width:34em;margin-bottom:28px;color:#e9efe9}
+.hero small{display:block;margin-top:14px;opacity:.85}
+.van{width:100%;height:auto}
+.bubbles circle{fill:none;stroke:var(--s);stroke-width:3;opacity:.7}
+section{padding:80px 0}
+h2{font-size:clamp(30px,4.2vw,48px);margin-bottom:14px}
+.sub{max-width:36em;margin-bottom:40px;color:#44575c}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;border:2px solid var(--line);border-radius:20px;padding:26px}
+.card h3{font-size:24px;margin-bottom:8px}
+.num{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--s);font:900 20px 'Fraunces',serif;margin-bottom:12px}
+.alt{background:#F3EAD4}
+.price{display:flex;flex-direction:column}
+.price .amt{font:900 44px 'Fraunces',serif;color:var(--p)}
+.price ul{margin:12px 0 0 18px;font-size:15px}
+.price.hot{border-color:var(--p);background:#fff}
+.note{font-size:14px;margin-top:20px;color:#44575c}
+details{border-bottom:2px solid var(--line);padding:18px 0}
+summary{font:700 20px 'Fraunces',serif;cursor:pointer}
+details p{margin-top:8px;max-width:42em}
+.signup{background:var(--ink);color:var(--bg)}
+.signup .sub{color:#c9d3d0}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:700px}
+label{display:flex;flex-direction:column;font-size:14px;font-weight:700;gap:6px}
+label.full,form .full{grid-column:1/-1}
+input,select{padding:13px;border-radius:12px;border:2px solid transparent;font:17px 'DM Sans',sans-serif}
+input:focus,select:focus{outline:3px solid var(--s)}
+footer{padding:30px 0;font-size:14px;background:var(--ink);color:#aebbb8;border-top:1px solid #33464b}
+@media(max-width:820px){.hero .wrap,.grid3{grid-template-columns:1fr}form{grid-template-columns:1fr}section{padding:56px 0}}
+</style>
+</head>
+<body>
+<div class="hero">
+<div class="wrap" style="display:block;padding-bottom:0">
+<header><span class="logo-bg"><img src="logo.svg" alt="Rinse &amp; Roam logo"></span><a class="btn sm" href="#join">Join the waitlist</a></header>
+</div>
+<div class="wrap">
+<div>
+<h1>The spa pulls up <em>to your curb.</em></h1>
+<p class="lead">A grooming van for San Jose dogs. One dog at a time, in a quiet climate-controlled van parked outside your home. No cages, no cage dryers, no salon drop-off.</p>
+<a class="btn" href="#join">Get first dibs on launch slots</a>
+<small>Launching soon in San Jose. Be one of our first customers.</small>
+</div>
+<svg class="van" viewBox="0 0 400 300" role="img" aria-label="Illustration of the Rinse &amp; Roam grooming van with bubbles">
+<g class="bubbles"><circle cx="90" cy="70" r="16"/><circle cx="130" cy="40" r="9"/><circle cx="60" cy="120" r="8"/><circle cx="320" cy="60" r="14"/><circle cx="350" cy="110" r="7"/></g>
+<ellipse cx="200" cy="262" rx="170" ry="12" fill="#0a4550"/>
+<path d="M30 220V110q0-20 20-20h190q14 0 24 12l50 54q8 8 8 20v44z" fill="#FBF6EC"/>
+<path d="M255 108l42 46h-42z" fill="#9fd0d8"/>
+<rect x="55" y="118" width="150" height="62" rx="10" fill="#0F5E6B"/>
+<g fill="#FBF6EC"><ellipse cx="130" cy="157" rx="14" ry="11"/><ellipse cx="108" cy="143" rx="5.5" ry="7"/><ellipse cx="121" cy="133" rx="5.5" ry="7.5"/><ellipse cx="139" cy="133" rx="5.5" ry="7.5"/><ellipse cx="152" cy="143" rx="5.5" ry="7"/></g>
+<rect x="30" y="196" width="296" height="12" fill="#F2B544"/>
+<circle cx="95" cy="226" r="26" fill="#1B2B30"/><circle cx="95" cy="226" r="11" fill="#F2B544"/>
+<circle cx="268" cy="226" r="26" fill="#1B2B30"/><circle cx="268" cy="226" r="11" fill="#F2B544"/>
+</svg>
+</div>
+</div>
+
+<section>
+<div class="wrap">
+<h2>Why a van beats a salon</h2>
+<p class="sub">Most dogs don't hate baths. They hate the hours of barking kennels, loud dryers and strangers in between.</p>
+<div class="grid3">
+<div class="card"><h3>One dog, start to finish</h3><p>Your dog is the only dog in the van. No waiting in a crate while others go first.</p></div>
+<div class="card"><h3>Calm for nervous dogs</h3><p>Seniors, rescues, big dogs and anxious dogs often do better without a car ride and a crowded room.</p></div>
+<div class="card"><h3>Your time back</h3><p>No drop-off, no pick-up window. Hand over the leash at the door, go back to your day.</p></div>
+</div>
+</div>
+</section>
+
+<section class="alt">
+<div class="wrap">
+<h2>How it works</h2>
+<p class="sub">Booking takes about two minutes.</p>
+<div class="grid3">
+<div class="card"><div class="num">1</div><h3>Tell us about your dog</h3><p>Breed, size, coat, temperament, and anything that makes them nervous.</p></div>
+<div class="card"><div class="num">2</div><h3>Pick a curbside time</h3><p>We confirm a window and text you when the van is a few minutes away.</p></div>
+<div class="card"><div class="num">3</div><h3>Fresh dog, same driveway</h3><p>Bath, blow dry, trim and nails inside the van. We bring our own water and power.</p></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="wrap">
+<h2>What's in a groom</h2>
+<p class="sub">Every visit includes the basics. Launch rates below are our planned starting points and will be confirmed before your first booking.</p>
+<div class="grid3">
+<div class="card price"><h3>Small</h3><span class="amt">from $110</span><span>Under 25 lb</span><ul><li>Bath and blow dry</li><li>Brush-out</li><li>Nail trim, ear cleaning</li></ul></div>
+<div class="card price hot"><h3>Medium</h3><span class="amt">from $135</span><span>25 to 60 lb</span><ul><li>Everything in Small</li><li>Haircut or tidy trim</li><li>Sanitary and face trim</li></ul></div>
+<div class="card price"><h3>Large</h3><span class="amt">from $170</span><span>Over 60 lb</span><ul><li>Everything in Medium</li><li>Deshedding treatment</li><li>Extra time, no rush</li></ul></div>
+</div>
+<p class="note">Prices are starting estimates and may change by coat condition, matting and travel distance. Payment is connected at launch.</p>
+</div>
+</section>
+
+<section class="alt">
+<div class="wrap">
+<h2>Questions</h2>
+<br>
+<details><summary>Where do you serve?</summary><p>We're starting in San Jose. Tell us your zip code on the waitlist and we'll confirm whether you're in our first route.</p></details>
+<details><summary>Do you need access to my water or power?</summary><p>No. The van carries its own water and power. We just need a legal spot to park near your home.</p></details>
+<details><summary>What if my dog is anxious or reactive?</summary><p>Tell us when you sign up. We'll plan extra time and go at your dog's pace.</p></details>
+<details><summary>When do you launch?</summary><p>We're finalizing the van now. Waitlist members hear first and get first pick of launch slots.</p></details>
+</div>
+</section>
+
+<section class="signup" id="join">
+<div class="wrap">
+<h2>Get on the waitlist</h2>
+<p class="sub">Tell us about your dog. We'll email you when booking opens. No payment needed now.</p>
+<!-- Form opens the visitor's email app addressed to the business. Replace the address with your real inbox or connect a form service. -->
+<form action="mailto:hello@example.com" method="post" enctype="text/plain">
+<label>Your name<input name="name" required autocomplete="name"></label>
+<label>Email<input name="email" type="email" required autocomplete="email"></label>
+<label>Zip code<input name="zip" inputmode="numeric" required autocomplete="postal-code"></label>
+<label>Dog's size<select name="size"><option>Small (under 25 lb)</option><option>Medium (25 to 60 lb)</option><option>Large (over 60 lb)</option></select></label>
+<label class="full">Dog's name and breed<input name="dog"></label>
+<div class="full"><button class="btn" type="submit">Save my spot</button></div>
+</form>
+</div>
+</section>
+
+<footer><div class="wrap">© 2026 Rinse &amp; Roam · Mobile dog grooming, San Jose, CA · Launching soon</div></footer>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garage</title>
+<meta name="description" content="Meet Otto, the open-source AI employee. He builds your brand, website, research, launch posts, outreach and pitch deck while you watch, on your own machine.">
+<meta property="og:title" content="Garage: build a business from your garage">
+<meta property="og:description" content="Meet Otto, the open-source AI employee who does the work. Free, on your own machine.">
+<meta name="theme-color" content="#f6f3ee">
+<link rel="canonical" href="https://garage-otto.pages.dev/">
+<meta property="og:url" content="https://garage-otto.pages.dev/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,700&family=DM+Sans:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f6f3ee; --paper-2: #efeae2; --card: #ffffff;
+  --ink: #16140f; --ink-2: #3a362e; --muted: #6c675d; --faint: #a39d92;
+  --line: rgba(22, 20, 15, .09); --line-2: rgba(22, 20, 15, .14);
+  --otto: #ff6a1f; --otto-deep: #e14b0c; --glow: #ffb46b;
+  --ok: #1f9d55;
+  --sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --head: "Inter Tight", Inter, ui-sans-serif, system-ui, sans-serif;
+  --serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow-sm: 0 1px 2px rgba(22,20,15,.06), 0 4px 14px -6px rgba(22,20,15,.12);
+  --shadow: 0 2px 4px rgba(22,20,15,.04), 0 24px 60px -24px rgba(60,40,20,.28);
+  --shadow-lg: 0 40px 120px -40px rgba(80,40,10,.45), 0 12px 30px -12px rgba(22,20,15,.18);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+.wrap { width: min(1180px, 100% - 32px); margin: 0 auto; }
+h1, h2, h3 { font-family: var(--head); font-weight: 600; letter-spacing: -.035em; line-height: 1.02; margin: 0; }
+h2 { font-size: clamp(36px, 5.2vw, 64px); }
+h2 em, h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.sub { color: var(--muted); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55; margin: 18px 0 0; max-width: 620px; }
+.center { text-align: center; }
+.center .sub { margin-left: auto; margin-right: auto; }
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--otto-deep); margin-bottom: 18px; letter-spacing: .01em; }
+.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--otto); }
+
+/* reveal on scroll */
+.rv { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); }
+.rv.in { opacity: 1; transform: none; }
+.rv.d1 { transition-delay: .08s; } .rv.d2 { transition-delay: .16s; } .rv.d3 { transition-delay: .24s; }
+
+/* Otto */
+.otto { --s: 56px; width: var(--s); height: var(--s); border-radius: calc(var(--s) * .32); position: relative; display: inline-block; flex: none;
+  background: radial-gradient(120% 120% at 28% 18%, #ffd2a1 0%, var(--glow) 18%, var(--otto) 55%, var(--otto-deep) 100%);
+  box-shadow: inset 0 calc(var(--s) * -.06) calc(var(--s) * .1) rgba(140,40,0,.25), inset 0 calc(var(--s) * .05) calc(var(--s) * .08) rgba(255,255,255,.45); }
+.otto i { position: absolute; inset: 0; }
+.otto i::before, .otto i::after { content: ""; position: absolute; top: 34%; width: 14%; height: 25%; border-radius: 50%; background: #20110a; animation: blink 5.2s infinite; }
+.otto i::before { left: 29%; } .otto i::after { right: 29%; }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+.otto.xs { --s: 20px; box-shadow: none; } .otto.sm { --s: 28px; }
+.otto.hero-otto { --s: 96px; animation: float 5s ease-in-out infinite; filter: drop-shadow(0 26px 30px rgba(225,75,12,.32)); }
+@keyframes float { 50% { transform: translateY(-12px) rotate(-2deg); } }
+
+/* nav */
+nav.top { position: fixed; inset: 0 0 auto; z-index: 60; transition: background .3s, box-shadow .3s, backdrop-filter .3s; }
+nav.top.scrolled { background: rgba(246,243,238,.78); backdrop-filter: saturate(1.4) blur(16px); box-shadow: 0 1px 0 var(--line); }
+nav.top .wrap { display: flex; align-items: center; gap: 28px; height: 68px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 700 20px var(--head); letter-spacing: -.03em; text-decoration: none; }
+.links { display: flex; gap: 26px; font-size: 14px; color: var(--ink-2); font-weight: 500; }
+.links a { text-decoration: none; opacity: .8; }
+.links a:hover { opacity: 1; }
+.nav-r { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 999px; font: 600 14px var(--sans); text-decoration: none; border: 0; cursor: pointer; white-space: nowrap; }
+.pill.dark { background: var(--ink); color: #fff; }
+.pill.dark:hover { background: #000; }
+.pill.ghost { background: rgba(255,255,255,.6); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2); }
+.pill.ghost:hover { background: #fff; }
+.pill svg { width: 17px; height: 17px; }
+.stars { font: 500 12px var(--mono); opacity: .7; }
+
+/* hero */
+.hero { position: relative; min-height: 100vh; padding: 150px 0 120px; overflow: hidden; text-align: center;
+  background:
+    radial-gradient(55% 40% at 50% 100%, rgba(255,160,90,.55), transparent 70%),
+    linear-gradient(180deg, #d9e3fb 0%, #e9e4f4 26%, #fbdcc6 62%, var(--paper) 100%); }
+.hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .35; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .4 0 0 0 0 .3 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.cloud { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,.95), rgba(255,255,255,.6) 55%, rgba(255,255,255,0)); filter: blur(4px); animation: drift linear infinite; pointer-events: none; }
+.cloud::before, .cloud::after { content: ""; position: absolute; border-radius: 50%; background: inherit; }
+.cloud::before { width: 60%; height: 90%; left: 12%; top: -38%; }
+.cloud::after { width: 46%; height: 70%; right: 10%; top: -22%; }
+@keyframes drift { from { transform: translateX(-12vw); } to { transform: translateX(12vw); } }
+.hero .wrap { position: relative; z-index: 2; }
+.hero h1 { font-size: clamp(46px, 8vw, 104px); max-width: 1000px; margin: 26px auto 0; }
+.hero h1 em { color: var(--otto-deep); }
+.hero .sub { margin-left: auto; margin-right: auto; max-width: 560px; color: var(--ink-2); }
+.prompt { width: min(660px, 100%); margin: 40px auto 0; background: rgba(255,255,255,.82); border-radius: 26px; padding: 18px 18px 14px 22px; text-align: left;
+  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 30px 70px -26px rgba(120,60,20,.45), 0 0 0 1px rgba(255,255,255,.7); backdrop-filter: blur(14px); }
+.prompt-text { font-size: 17px; min-height: 54px; color: var(--ink); }
+.prompt-text .ph { color: var(--faint); }
+.prompt-text .car { display: inline-block; width: 2px; height: 1.1em; background: var(--otto); vertical-align: -3px; margin-left: 1px; animation: car 1s steps(1) infinite; }
+@keyframes car { 50% { opacity: 0; } }
+.prompt-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.cmd { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; background: var(--paper-2); border-radius: 12px; padding: 8px 8px 8px 12px; font: 13px var(--mono); color: var(--ink-2); }
+.cmd code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.cmd code b { color: var(--faint); font-weight: 400; }
+.copy { border: 0; background: #fff; color: var(--ink); border-radius: 8px; padding: 6px 11px; font: 600 12px var(--sans); cursor: pointer; box-shadow: var(--shadow-sm); }
+.go { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--ink); color: #fff; display: grid; place-items: center; cursor: pointer; flex: none; }
+.go svg { width: 18px; height: 18px; }
+.need { margin-top: 18px; font-size: 13px; color: var(--muted); }
+.need a { color: var(--ink-2); }
+.chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.chips span { font-size: 13px; color: var(--ink-2); background: rgba(255,255,255,.55); border-radius: 999px; padding: 6px 13px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.8); }
+
+/* garage reveal */
+.reveal { position: relative; height: 230vh; margin-top: -60px; }
+.reveal-sticky { position: sticky; top: 0; height: 100vh; display: grid; place-items: center; overflow: hidden; }
+.reveal-cap { position: absolute; top: 9vh; left: 0; right: 0; text-align: center; z-index: 3; transition: opacity .4s; }
+.reveal-cap p { margin: 0; font: 600 14px var(--sans); color: var(--muted); }
+.reveal-cap .arrow { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(5px); } }
+.garage { position: relative; width: min(1140px, 100% - 32px, (100vh - 190px) * 1.6667); aspect-ratio: 1100 / 660; margin-top: 5vh; }
+.garage::before { content: ""; position: absolute; inset: -18px -18px -26px; border-radius: 30px; background: linear-gradient(180deg, #e9e3d9, #ddd5c8); box-shadow: var(--shadow-lg), inset 0 2px 0 rgba(255,255,255,.7); }
+.garage::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: -26px; height: 60px; background: radial-gradient(50% 100% at 50% 0%, rgba(255,120,40,calc(var(--open, 0) * .55)), transparent 70%); filter: blur(10px); pointer-events: none; }
+.bay { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; background: #0e0e10; box-shadow: inset 0 0 0 1px rgba(0,0,0,.4); }
+.door { position: absolute; inset: 0; z-index: 20; transform: translateY(calc(var(--open, 0) * -101%)); will-change: transform;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.06), transparent 8%, transparent 92%, rgba(0,0,0,.06)),
+    repeating-linear-gradient(180deg, #f8f6f2 0, #f1eee8 calc(10% - 7px), #d7d1c6 calc(10% - 3px), #fbfaf7 calc(10% - 2px), #f8f6f2 10%);
+  box-shadow: 0 18px 40px -10px rgba(0,0,0,.35); }
+.door::before { content: ""; position: absolute; left: 50%; bottom: 7%; width: 120px; height: 10px; margin-left: -60px; border-radius: 6px; background: linear-gradient(#bfb8ac, #9d968a); box-shadow: 0 2px 3px rgba(0,0,0,.2); }
+.door-glow { position: absolute; left: 0; right: 0; bottom: 0; height: 60px; z-index: 19; background: linear-gradient(transparent, rgba(255,120,40,.35)); opacity: calc(1 - var(--open, 0)); pointer-events: none; }
+.door-label { position: absolute; inset: 0 0 12%; display: grid; place-items: center; pointer-events: none; }
+.door-label span { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,.75); border-radius: 999px; padding: 10px 20px 10px 12px; font: 600 15px var(--sans); color: var(--ink-2); box-shadow: var(--shadow-sm); }
+
+/* demo (the app, dark) */
+.demo { position: absolute; left: 0; top: 0; width: 1100px; height: 660px; transform-origin: 0 0; color: #f4f3ef;
+  background-color: #111113; background-image: radial-gradient(rgba(255,255,255,.05) 1.2px, transparent 1.3px); background-size: 22px 22px;
+  font: 13px/1.45 var(--sans); --panel: #1b1b1f; --panel-2: #232328; --panel-3: #2b2b31; --dl: #2f2f36; --dl2: #3a3a42; --dm: #a2a1aa; --df: #6f6e78; }
+.demo .otto { box-shadow: none; }
+.d-top { height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-bottom: 1px solid var(--dl); background: rgba(17,17,19,.92); }
+.d-biz { display: flex; align-items: center; gap: 8px; font: 700 15px var(--head); letter-spacing: -.02em; }
+.d-mark { width: 24px; height: 24px; border-radius: 7px; background: radial-gradient(circle at 30% 25%, var(--glow), var(--otto) 60%, #e0470b); overflow: hidden; }
+.d-mark img { width: 100%; height: 100%; background: #fff; padding: 2px; }
+.d-status { display: none; align-items: center; gap: 8px; background: var(--panel-2); border: 1px solid var(--dl); border-radius: 999px; padding: 4px 14px 4px 10px; font-size: 12px; max-width: 380px; white-space: nowrap; overflow: hidden; }
+.d-status.on { display: flex; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--otto); flex: none; animation: pulse 1.6s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,106,31,.6); } 70%, 100% { box-shadow: 0 0 0 8px rgba(255,106,31,0); } }
+.d-meter { margin-left: auto; font-size: 11px; color: var(--dm); border: 1px solid var(--dl); border-radius: 999px; padding: 4px 11px; }
+.d-meter b { color: #f4f3ef; font: 600 11px var(--mono); }
+.d-meter b.g { color: #3ddc84; }
+.d-desk { position: absolute; left: 0; right: 0; top: 44px; bottom: 96px; }
+.d-plan { position: absolute; right: 14px; top: 14px; width: 220px; background: rgba(27,27,31,.94); border: 1px solid var(--dl); border-radius: 14px; padding: 11px 12px 8px; opacity: 0; transform: translateY(-6px); transition: .4s; }
+.d-plan.on { opacity: 1; transform: none; }
+.d-plan h4 { margin: 0 0 6px; font-size: 11px; color: var(--dm); display: flex; justify-content: space-between; }
+.d-plan ol { margin: 0; padding: 0; }
+.d-plan li { list-style: none; display: flex; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; color: var(--dm); }
+.d-plan .t { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--dl2); flex: none; }
+.d-plan .doing { color: #f4f3ef; font-weight: 600; }
+.d-plan .doing .t { border-color: var(--otto); border-top-color: transparent; animation: spin .8s linear infinite; }
+.d-plan .done { color: var(--df); }
+.d-plan .done .t { background: #3ddc84; border-color: #3ddc84; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.d-win { position: absolute; background: var(--panel); border: 1px solid var(--dl2); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 24px 60px -12px rgba(0,0,0,.7); opacity: 0; transform: scale(.94) translateY(10px); transition: opacity .3s, transform .35s cubic-bezier(.2,.9,.3,1.2), border-color .3s; }
+.d-win.on { opacity: 1; transform: none; }
+.d-win.otto-on { border-color: var(--otto); box-shadow: 0 24px 60px -12px rgba(0,0,0,.7), 0 0 0 3px rgba(255,106,31,.18); }
+.d-bar { height: 32px; flex: none; display: flex; align-items: center; gap: 6px; padding: 0 10px; background: var(--panel-2); border-bottom: 1px solid var(--dl); }
+.d-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--dl2); }
+.d-win.otto-on .d-bar i:nth-child(1) { background: #ff5f57; } .d-win.otto-on .d-bar i:nth-child(2) { background: #febc2e; } .d-win.otto-on .d-bar i:nth-child(3) { background: #28c840; }
+.d-bar b { margin: 0 auto; font-size: 12px; display: flex; align-items: center; gap: 6px; padding-right: 40px; }
+.ico { width: 15px; height: 15px; border-radius: 4px; display: inline-grid; place-items: center; }
+.ico svg { width: 10px; height: 10px; color: #fff; }
+.d-body { flex: 1; overflow: hidden; position: relative; }
+.srch { margin: 10px; padding: 9px 10px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--dl); }
+.srch-q { font-weight: 600; font-size: 12px; display: flex; gap: 7px; align-items: center; }
+.srch-q.pending::after { content: ""; width: 10px; height: 10px; margin-left: auto; border-radius: 50%; border: 2px solid var(--otto); border-top-color: transparent; animation: spin .8s linear infinite; }
+.lk { display: flex; gap: 8px; align-items: center; padding: 3px 4px; font-size: 11.5px; animation: rise .3s ease both; }
+.lk i { width: 12px; height: 12px; border-radius: 3px; background: var(--panel-3); flex: none; }
+.lk span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lk em { margin-left: auto; font-style: normal; color: var(--df); font-size: 11px; white-space: nowrap; }
+@keyframes rise { from { opacity: 0; transform: translateY(5px); } }
+.d-brand-hero { margin: 12px; border-radius: 12px; background: #FBF6EC; height: 130px; display: grid; place-items: center; }
+.d-brand-hero img { height: 66px; opacity: 0; transition: opacity .6s; }
+.d-brand-hero img.on { opacity: 1; }
+.sw { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 0 12px; }
+.sw i { height: 44px; border-radius: 9px; transform: scale(0); transition: transform .35s cubic-bezier(.3,1.5,.5,1); }
+.sw.on i { transform: scale(1); }
+.d-fonts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 12px; }
+.d-fonts div { background: var(--panel-2); border-radius: 9px; padding: 8px 10px; font-size: 11px; color: var(--dm); }
+.d-fonts b { display: block; font-size: 24px; color: #f4f3ef; line-height: 1.1; }
+.d-build { display: grid; grid-template-columns: 2fr 3fr; height: 100%; }
+.code { margin: 0; padding: 10px 12px; font: 10.5px/1.55 var(--mono); color: #c9c8d1; background: #141417; white-space: pre-wrap; word-break: break-all; overflow: hidden; border-right: 1px solid var(--dl); }
+.code .t { color: #ff8a65; } .code .a { color: #ffd479; } .code .s { color: #8fdc9a; }
+.caret { display: inline-block; width: 6px; height: 12px; background: var(--otto); vertical-align: text-bottom; animation: car 1s steps(1) infinite; }
+.pv { position: relative; overflow: hidden; background: #f4f2ec; }
+.pv iframe, .vis iframe, .thumb iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; pointer-events: none; }
+.pv iframe { width: 1000px; height: 1200px; opacity: 0; transition: opacity .5s; }
+.pv iframe.on { opacity: 1; }
+.pv .wait { position: absolute; inset: 0; display: grid; place-items: center; color: #999; font-size: 12px; }
+.post { margin: 10px; padding: 10px; border-radius: 11px; background: var(--panel-2); border: 1px solid var(--dl); display: grid; grid-template-columns: 92px 1fr; gap: 10px; animation: rise .35s ease both; }
+.post img { width: 92px; height: 92px; border-radius: 8px; }
+.post p { margin: 0; font-size: 11.5px; color: #d6d5dc; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.post .row { display: flex; gap: 6px; align-items: center; margin-bottom: 5px; }
+.net { font-size: 10px; font-weight: 700; background: #f4f3ef; color: #111; border-radius: 5px; padding: 1px 7px; }
+.pend { font-size: 10px; font-weight: 600; border-radius: 999px; padding: 1px 7px; background: rgba(255,205,60,.14); color: #ffcd3c; }
+.d-ask { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,10,12,.5); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 30; }
+.d-ask.on { opacity: 1; }
+.d-ask .card { width: 400px; background: var(--panel); border: 1px solid var(--dl2); border-radius: 22px; padding: 20px; text-align: center; transform: scale(.92); transition: transform .35s cubic-bezier(.2,.9,.3,1.3); box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 5px rgba(255,106,31,.08); }
+.d-ask.on .card { transform: none; }
+.d-ask .ey { color: var(--otto); font-weight: 600; font-size: 11px; margin: 8px 0 4px; }
+.d-ask h5 { font: 600 17px/1.25 var(--head); letter-spacing: -.02em; margin: 0 0 4px; }
+.d-ask .why { color: var(--dm); font-size: 11px; margin: 0 0 12px; }
+.opt { display: flex; gap: 9px; align-items: center; text-align: left; padding: 8px 11px; border: 1px solid var(--dl2); background: var(--panel-2); border-radius: 11px; margin-top: 6px; font-size: 12px; transition: .2s; }
+.opt kbd { font: 10px var(--mono); color: var(--dm); border: 1px solid var(--dl2); border-radius: 4px; padding: 0 5px; }
+.opt.pick { border-color: var(--otto); background: rgba(255,106,31,.12); }
+.d-toast { position: absolute; right: 14px; bottom: 14px; z-index: 40; background: var(--panel-2); border: 1px solid rgba(61,220,132,.45); border-radius: 12px; padding: 10px 14px; font-size: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.5); opacity: 0; transform: translateY(10px); transition: .35s; }
+.d-toast.on { opacity: 1; transform: none; }
+.d-toast b { color: #3ddc84; }
+.d-cursor { position: absolute; left: 0; top: 0; z-index: 35; display: flex; align-items: center; gap: 6px; transition: transform .85s cubic-bezier(.22,.9,.24,1), opacity .3s; opacity: 0; }
+.d-cursor.on { opacity: 1; }
+.d-cursor::before { content: ""; position: absolute; left: -9px; top: -11px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid var(--otto); transform: rotate(-35deg); }
+.d-cursor span:last-child { background: var(--otto); color: #1b0f07; font-weight: 600; font-size: 11px; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.d-hand { position: absolute; left: 0; top: 0; z-index: 45; width: 22px; transition: transform .9s cubic-bezier(.22,.9,.24,1), opacity .3s; opacity: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,.6)); }
+.d-hand.on { opacity: 1; }
+.d-bottom { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; display: grid; justify-items: center; align-content: center; gap: 8px; }
+.d-cmd { width: 420px; display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--dl2); border-radius: 12px; padding: 6px 10px; font-size: 12.5px; height: 34px; }
+.d-cmd #dCmd:empty::before { content: "Tell Otto what to do…"; color: var(--df); }
+.d-dock { display: flex; gap: 5px; padding: 5px 8px; background: rgba(30,30,35,.85); border: 1px solid var(--dl2); border-radius: 15px; }
+.d-dock span { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; }
+.d-dock span svg { width: 15px; height: 15px; color: #fff; }
+.d-dock span.busy { animation: bob 1s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+.reveal-note { position: absolute; bottom: 4vh; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--muted); }
+
+/* numbers */
+.numbers { padding: 40px 0 120px; }
+.nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px; }
+.num { background: var(--card); border-radius: 22px; padding: 26px 24px 22px; box-shadow: var(--shadow-sm); }
+.num b { display: block; font: 600 52px/1 var(--head); letter-spacing: -.045em; }
+.num b.o { color: var(--otto-deep); }
+.num span { display: block; color: var(--muted); font-size: 14px; margin-top: 10px; line-height: 1.45; }
+
+/* story */
+.story { padding: 120px 0 60px; }
+.story-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 64px; margin-top: 70px; }
+.steps { padding-bottom: 20vh; }
+.step { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; opacity: .25; transition: opacity .5s; }
+.step.on { opacity: 1; }
+.step .n { font: 500 13px var(--mono); color: var(--otto-deep); margin-bottom: 14px; }
+.step h3 { font-size: clamp(30px, 3.4vw, 44px); }
+.step p { color: var(--muted); font-size: 18px; margin: 14px 0 0; max-width: 420px; }
+.stage { position: sticky; top: 16vh; height: 68vh; min-height: 440px; }
+.scene { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; display: grid; place-items: center; padding: 34px;
+  background: linear-gradient(160deg, #fde7d6, #f6ddd0 40%, #e4e3f3); box-shadow: var(--shadow);
+  opacity: 0; transform: scale(.97); transition: opacity .55s, transform .55s cubic-bezier(.2,.8,.2,1); }
+.scene.on { opacity: 1; transform: none; }
+.scene:nth-child(2) { background: linear-gradient(160deg, #dfe8fb, #ece6f5 50%, #fbe2d2); }
+.scene:nth-child(3) { background: linear-gradient(160deg, #ffe3cf, #ffd2b8 45%, #f6e4d8); }
+.scene:nth-child(4) { background: linear-gradient(160deg, #e3f1e6, #eef0e2 50%, #f8e6d6); }
+.scene:nth-child(5) { background: linear-gradient(160deg, #e4e3f3, #f1e3ee 50%, #fde7d6); }
+.glass { width: 100%; max-width: 470px; background: rgba(255,255,255,.88); border-radius: 22px; box-shadow: 0 30px 70px -30px rgba(80,40,20,.45), 0 0 0 1px rgba(255,255,255,.9); backdrop-filter: blur(10px); padding: 20px; }
+.chat-in { display: flex; align-items: center; gap: 10px; background: var(--paper); border-radius: 14px; padding: 12px 12px 12px 16px; font-size: 15px; }
+.chat-in > span:first-child { flex: 1; }
+.bub { margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--ink-2); }
+.bub p { margin: 0; background: var(--paper); border-radius: 4px 16px 16px 16px; padding: 10px 14px; }
+.feed { display: grid; gap: 4px; }
+.feed div { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 12px; font-size: 14px; color: var(--ink-2); }
+.feed div:last-child { background: #fff4ec; color: var(--ink); font-weight: 600; }
+.feed .fi { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex: none; }
+.feed .fi svg { width: 14px; height: 14px; color: #fff; }
+.feed .ok { margin-left: auto; color: var(--ok); font-weight: 700; }
+.feed .spin { margin-left: auto; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--otto); border-top-color: transparent; animation: spin .8s linear infinite; }
+.ask-l { text-align: center; }
+.ask-l .ey { color: var(--otto-deep); font-weight: 600; font-size: 13px; margin: 12px 0 4px; }
+.ask-l h4 { font: 600 21px/1.25 var(--head); letter-spacing: -.02em; margin: 0 0 14px; }
+.ask-l .o { display: flex; gap: 10px; align-items: center; text-align: left; padding: 11px 14px; border-radius: 13px; background: var(--paper); margin-top: 7px; font-size: 14px; }
+.ask-l .o kbd { font: 11px var(--mono); color: var(--muted); background: #fff; border-radius: 5px; padding: 1px 6px; box-shadow: inset 0 0 0 1px var(--line-2); }
+.ask-l .o.pick { background: #fff1e7; box-shadow: inset 0 0 0 1.5px var(--otto); }
+.ap { display: grid; grid-template-columns: 96px 1fr; gap: 14px; }
+.ap img { width: 96px; height: 96px; border-radius: 12px; }
+.ap p { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--ink); color: #fff; }
+.tag.w { background: #fff6dc; color: #9a6b00; font-weight: 600; border-radius: 999px; }
+.ap-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.ap-actions span { font: 600 13px var(--sans); padding: 8px 14px; border-radius: 10px; background: var(--paper); }
+.ap-actions span.a { background: var(--otto); color: #fff; }
+.live-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--paper); border-radius: 12px; font: 13px var(--mono); color: var(--ink-2); }
+.live-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(31,157,85,.15); }
+.thumb { margin-top: 12px; height: 230px; border-radius: 14px; overflow: hidden; position: relative; background: #0F5E6B; }
+.thumb iframe { width: 1200px; height: 1000px; }
+
+/* bento */
+.made { padding: 120px 0; }
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 60px; }
+.bc { background: var(--card); border-radius: 28px; padding: 26px; box-shadow: var(--shadow-sm); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.bc h3 { font-size: 24px; letter-spacing: -.025em; }
+.bc > p { color: var(--muted); margin: 6px 0 20px; font-size: 15px; }
+.s2 { grid-column: span 2; } .s3 { grid-column: span 3; } .s4 { grid-column: span 4; }
+.vis { flex: 1; border-radius: 18px; background: var(--paper); position: relative; overflow: hidden; min-height: 200px; }
+.site-vis { min-height: 380px; }
+.brand-vis { display: grid; align-content: center; gap: 14px; padding: 20px; background: #FBF6EC; }
+.brand-vis img { height: 54px; margin: 0 auto; }
+.brand-vis .sws { display: flex; justify-content: center; gap: 6px; }
+.brand-vis .sws i { width: 34px; height: 34px; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+.brand-vis .fts { display: flex; justify-content: center; gap: 18px; color: #1B2B30; }
+.brand-vis .fts b { font-size: 28px; line-height: 1; display: block; }
+.brand-vis .fts span { font-size: 11px; color: #6b6a62; }
+.posts-vis { display: flex; align-items: center; justify-content: center; padding: 20px; }
+.posts-vis img { width: 54%; border-radius: 14px; box-shadow: var(--shadow); position: relative; }
+.posts-vis img:nth-child(1) { transform: rotate(-7deg) translateX(30%); z-index: 1; }
+.posts-vis img:nth-child(2) { transform: rotate(5deg) translateX(-30%) translateY(10px); z-index: 2; }
+.res-vis { padding: 18px 20px; font-size: 13.5px; color: var(--ink-2); }
+.res-vis h4 { font: 600 15px var(--head); margin: 0 0 10px; letter-spacing: -.01em; }
+.res-vis li { margin-bottom: 8px; line-height: 1.45; }
+.res-vis ul { margin: 0; padding-left: 18px; }
+.res-vis sup { background: #fff; color: var(--otto-deep); font: 600 10px var(--mono); border-radius: 4px; padding: 1px 4px; box-shadow: inset 0 0 0 1px var(--line-2); }
+.deck-vis { background: #0F5E6B; }
+.deck-vis { aspect-ratio: 16 / 9; min-height: 0; flex: none; }
+.sheet-vis table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sheet-vis th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; padding: 12px 16px 8px; }
+.sheet-vis td { padding: 9px 16px; border-top: 1px solid var(--line); }
+.sheet-vis td.n { text-align: right; font: 13px var(--mono); }
+.sheet-vis tr.tot td { font-weight: 600; background: #fff; }
+.mail-vis { padding: 18px 20px; font-size: 14px; color: var(--ink-2); }
+.mail-vis .h { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.mail-vis .h b { color: var(--ink); }
+.mail-vis .sj { font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.mail-vis p { margin: 0 0 8px; line-height: 1.5; }
+
+/* handled */
+.handled { padding: 60px 0 120px; }
+.hl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 36px; margin-top: 60px; }
+.hl div { border-top: 1px solid var(--line-2); padding-top: 22px; }
+.hl svg { width: 22px; height: 22px; color: var(--otto-deep); }
+.hl h4 { font: 600 19px var(--head); letter-spacing: -.02em; margin: 14px 0 6px; }
+.hl p { color: var(--muted); margin: 0; font-size: 15px; }
+
+/* compare */
+.compare { padding: 120px 0; background: linear-gradient(180deg, var(--paper), #f1ebe2); }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 56px; max-width: 920px; margin-left: auto; margin-right: auto; }
+.plan { border-radius: 28px; padding: 32px; background: var(--card); box-shadow: var(--shadow-sm); }
+.plan.us { background: var(--ink); color: #fff; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.plan.us::before { content: ""; position: absolute; right: -80px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,106,31,.5), transparent); }
+.plan h3 { font-size: 22px; display: flex; align-items: center; gap: 10px; position: relative; }
+.price { font: 600 64px/1 var(--head); letter-spacing: -.05em; margin: 22px 0 4px; position: relative; }
+.price small { font: 500 16px var(--sans); letter-spacing: 0; opacity: .6; }
+.plan .pn { font-size: 14px; opacity: .65; margin: 0 0 24px; position: relative; }
+.plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 11px; position: relative; }
+.plan li { display: flex; gap: 11px; font-size: 15px; align-items: flex-start; }
+.plan li::before { content: ""; width: 18px; height: 18px; flex: none; margin-top: 2px; border-radius: 50%; background: var(--paper-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316140f' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E") center / 11px no-repeat; }
+.plan.us li::before { background-color: var(--otto); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12 4 4 8-8'/%3E%3C/svg%3E"); }
+.plan li.x { opacity: .5; }
+.plan li.x::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M7 12h10'/%3E%3C/svg%3E"); background-color: transparent; box-shadow: inset 0 0 0 1.5px rgba(150,150,150,.5); }
+.fine { text-align: center; color: var(--faint); font-size: 13px; margin-top: 22px; }
+
+/* faq */
+.faq { padding: 120px 0; }
+.faq-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 60px; }
+details { border-bottom: 1px solid var(--line-2); }
+summary { cursor: pointer; list-style: none; padding: 22px 0; font: 600 19px var(--head); letter-spacing: -.02em; display: flex; justify-content: space-between; gap: 20px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: ""; width: 12px; height: 12px; flex: none; margin-top: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .3s; }
+details[open] summary::after { transform: rotate(225deg); margin-top: 11px; }
+details p { margin: -6px 0 22px; color: var(--muted); max-width: 640px; }
+details code { font: 13px var(--mono); background: var(--paper-2); padding: 2px 6px; border-radius: 6px; color: var(--ink); }
+
+/* final */
+.final { position: relative; overflow: hidden; padding: 140px 0 0; text-align: center;
+  background: radial-gradient(60% 60% at 50% 100%, rgba(255,140,60,.55), transparent 70%), linear-gradient(180deg, var(--paper), #fbdcc6 55%, #f5b48a); }
+.final h2 { font-size: clamp(44px, 7vw, 92px); }
+.final .sub { margin-left: auto; margin-right: auto; }
+.final .prompt { margin-top: 36px; }
+.mini-garage { position: relative; width: min(520px, 90%); height: 190px; margin: 80px auto 0; border-radius: 22px 22px 0 0; background: #2a1408; overflow: hidden; box-shadow: 0 -20px 80px -20px rgba(255,110,30,.7); }
+.mini-garage::before { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 90% at 50% 100%, rgba(255,140,60,.75), rgba(255,90,20,.15) 60%, transparent); }
+.mini-door { position: absolute; left: 0; right: 0; top: 0; height: 58%; background: repeating-linear-gradient(180deg, #f8f6f2 0, #f1eee8 22px, #d7d1c6 26px, #fbfaf7 27px, #f8f6f2 30px); box-shadow: 0 10px 20px rgba(0,0,0,.35); }
+.mini-garage .otto { position: absolute; left: 50%; bottom: -18px; margin-left: -48px; --s: 96px; animation: peek 4s ease-in-out infinite; }
+@keyframes peek { 0%, 100% { transform: translateY(12px); } 50% { transform: translateY(-6px); } }
+footer { background: #17110c; color: rgba(255,255,255,.55); font-size: 13px; padding: 34px 0 44px; }
+footer .wrap { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+footer .brand { color: #fff; font-size: 17px; }
+footer a { color: rgba(255,255,255,.8); }
+
+@media (max-width: 960px) {
+  .links { display: none; }
+  .nums { grid-template-columns: 1fr 1fr; }
+  .story-grid { grid-template-columns: 1fr; gap: 0; }
+  .stage { position: sticky; top: 76px; height: 380px; min-height: 0; z-index: 2; order: -1; }
+  .scene { padding: 18px; border-radius: 22px; }
+  .step { min-height: 55vh; }
+  .bento { grid-template-columns: 1fr; }
+  .s2, .s3, .s4 { grid-column: auto; }
+  .hl { grid-template-columns: 1fr; gap: 28px; }
+  .cmp { grid-template-columns: 1fr; }
+  .faq-grid { grid-template-columns: 1fr; gap: 20px; }
+  .reveal { height: 190vh; }
+  .stars { display: none; }
+}
+@media (max-width: 560px) {
+  .nav-r .ghost { display: none; }
+  .hero { padding-top: 120px; }
+  .glass { padding: 14px; }
+  .thumb { height: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .rv { opacity: 1; transform: none; }
+  .reveal { height: auto; }
+  .reveal-sticky { position: relative; height: auto; padding: 60px 0; }
+  .door, .door-label, .door-glow, .reveal-cap { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#"><span class="otto sm"><i></i></span>Garage</a>
+    <div class="links">
+      <a href="#demo">Demo</a>
+      <a href="#how">How it works</a>
+      <a href="#made">What you get</a>
+      <a href="#compare">Compare</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-r">
+      <a class="pill ghost" href="https://github.com/hilothefunnydog123-coder/garage"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 2.9.8.1-.6.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>GitHub</a>
+      <a class="pill dark" href="#start">Get Garage</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="cloud" style="width:340px;height:110px;left:6%;top:24%;animation-duration:70s"></div>
+  <div class="cloud" style="width:260px;height:80px;right:8%;top:16%;animation-duration:90s;animation-direction:reverse"></div>
+  <div class="cloud" style="width:420px;height:130px;right:-4%;top:62%;animation-duration:110s;opacity:.85"></div>
+  <div class="cloud" style="width:300px;height:96px;left:-3%;top:70%;animation-duration:80s;animation-direction:reverse;opacity:.8"></div>
+  <div class="wrap">
+    <span class="otto hero-otto rv"><i></i></span>
+    <h1 class="rv d1">Build a business from your <em>garage</em>.</h1>
+    <p class="sub rv d2">Meet Otto, the open-source AI employee who does the work. Free, on your own machine.</p>
+    <div class="prompt rv d3" id="start">
+      <div class="prompt-text" id="heroPrompt" aria-live="off"></div>
+      <div class="prompt-row">
+        <div class="cmd"><code><b>$ </b>npx github:hilothefunnydog123-coder/garage</code><button class="copy" data-copy="npx github:hilothefunnydog123-coder/garage">Copy</button></div>
+        <a class="go" href="#demo" aria-label="Watch Otto work"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+      </div>
+    </div>
+    <p class="need rv d3">Needs <a href="https://nodejs.org">Node 20+</a> and <a href="https://docs.claude.com/en/docs/claude-code/setup">Claude Code</a>. No account, no credits.</p>
+    <div class="chips rv d3"><span>MIT licensed</span><span>Runs on your Claude</span><span>Your files, on your disk</span><span>Unlimited businesses</span></div>
+  </div>
+</header>
+
+<section class="reveal" id="demo" aria-label="Replay of a real Garage run">
+  <div class="reveal-sticky">
+    <div class="reveal-cap" id="revealCap"><p>Open the garage <span class="arrow">↓</span></p></div>
+    <div class="garage" id="garage">
+      <div class="bay" id="bay">
+        <div class="demo" id="demo-desk" aria-hidden="true">
+          <div class="d-top">
+            <span class="d-biz"><span class="d-mark" id="dMark"></span><span id="dName">Garage</span></span>
+            <span class="d-status" id="dStatus"><i class="pulse"></i><span id="dStatusText"></span></span>
+            <span class="d-meter">API value <b id="dCost">$0.00</b> · You pay <b class="g">$0</b></span>
+          </div>
+          <div class="d-desk" id="dDesk">
+            <div class="d-plan" id="dPlan"><h4><span>Plan</span><span id="dPlanCount">0/7</span></h4><ol id="dPlanList"></ol></div>
+            <div class="d-win" id="wResearch" style="left:18px;top:18px;width:380px;height:300px"><div class="d-bar"><i></i><i></i><i></i><b><span class="ico" style="background:linear-gradient(160deg,#5b95ff,#2453d6)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>Research</b></div><div class="d-body" id="research"></div></div>
+            <div class="d-win" id="wBrand" style="left:70px;top:96px;width:350px;height:318px"><div class="d-bar"><i></i><i></i><i></i><b><span class="ico" style="background:linear-gradient(160deg,#ff86bd,#d6336c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg></span>Brand</b></div>
+              <div class="d-body"><div class="d-brand-hero"><img id="brandLogo" src="examples/rinse-and-roam/logo.svg" alt=""></div>
+              <div class="sw" id="sw"><i style="background:#0F5E6B"></i><i style="background:#F2B544;transition-delay:.06s"></i><i style="background:#E4572E;transition-delay:.12s"></i><i style="background:#FBF6EC;transition-delay:.18s"></i><i style="background:#1B2B30;transition-delay:.24s"></i></div>
+              <div class="d-fonts"><div><b style="font-family:Fraunces,serif">Aa</b>Fraunces</div><div><b style="font-family:'DM Sans',sans-serif">Aa</b>DM Sans</div></div></div></div>
+            <div class="d-win" id="wBuild" style="left:330px;top:12px;width:560px;height:410px"><div class="d-bar"><i></i><i></i><i></i><b><span class="ico" style="background:linear-gradient(160deg,#2ad6c9,#0b8f99)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></span>Build</b></div>
+              <div class="d-body"><div class="d-build"><pre class="code" id="code"></pre><div class="pv"><div class="wait">Otto is building your site…</div><iframe id="pv" title="" tabindex="-1"></iframe></div></div></div></div>
+            <div class="d-win" id="wSocial" style="left:610px;top:40px;width:370px;height:400px"><div class="d-bar"><i></i><i></i><i></i><b><span class="ico" style="background:linear-gradient(160deg,#ff6b6b,#c81e3a)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span>Social</b></div><div class="d-body" id="social"></div></div>
+            <div class="d-ask" id="dAsk"><div class="card">
+              <span class="otto"><i></i></span>
+              <p class="ey">Otto needs you</p>
+              <h5>Which pricing model do you prefer for Rinse &amp; Roam?</h5>
+              <p class="why">Price shows on the site, deck and a launch post, so I'll update them all to match.</p>
+              <div class="opt" id="opt1"><kbd>1</kbd>Flat by size: $110 / $135 / $170</div>
+              <div class="opt"><kbd>2</kbd>Premium by size: $130 / $160 / $200</div>
+              <div class="opt"><kbd>3</kbd>Membership: monthly groom plan, about $120/mo</div>
+              <div class="opt"><kbd>4</kbd>By breed and coat, quoted at booking</div>
+            </div></div>
+            <div class="d-toast" id="dToast">Done in 2:30. That run is worth <b>$0.43</b> at API prices. You paid <b>$0</b>.</div>
+            <div class="d-cursor" id="dCursor"><span class="otto xs"><i></i></span><span id="dCursorLabel"></span></div>
+            <svg class="d-hand" id="dHand" viewBox="0 0 24 24"><path d="M5 2l14 10-6.5 1.2L16 20l-3 1.5-3.6-6.8L5 19z" fill="#fff" stroke="#111" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="d-bottom">
+            <div class="d-cmd"><span class="otto xs"><i></i></span><span id="dCmd"></span></div>
+            <div class="d-dock" id="dDock"></div>
+          </div>
+        </div>
+        <div class="door-glow"></div>
+        <div class="door" id="door"><div class="door-label"><span><span class="otto sm"><i></i></span>Otto's at work in here</span></div></div>
+      </div>
+    </div>
+    <p class="reveal-note">A real run, replayed. Rinse &amp; Roam is a test business, not a real one.</p>
+  </div>
+</section>
+
+<section class="numbers">
+  <div class="wrap">
+    <div class="nums">
+      <div class="num rv"><b>2:30</b><span>One line of idea to a whole business: brand, site, research, posts, outreach, deck, numbers.</span></div>
+      <div class="num rv d1"><b>7</b><span>Things Otto builds in a single run, each one a real file you own.</span></div>
+      <div class="num rv d2"><b>$0.43</b><span>What that whole run is worth at Claude API prices.</span></div>
+      <div class="num rv d3"><b class="o">$0</b><span>Paid to Garage. No credits, no plans, no meter.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="story" id="how">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow rv">How it works</div>
+      <h2 class="rv d1">From idea to first <em>customer</em>.</h2>
+      <p class="sub rv d2">He builds it, shows you every move, asks when it's your call, and waits for your OK.</p>
+    </div>
+    <div class="story-grid">
+      <div class="steps" id="steps">
+        <div class="step on" data-i="0"><div class="n">01</div><h3>Say the idea.</h3><p>One sentence is enough. Otto picks a name, draws a logo, chooses colors and fonts, and gets to work.</p></div>
+        <div class="step" data-i="1"><div class="n">02</div><h3>Watch him work.</h3><p>Every search, every page he reads, every line of your site appears on a desktop you can see, as it happens.</p></div>
+        <div class="step" data-i="2"><div class="n">03</div><h3>He asks when it's your call.</h3><p>Name, price, audience: Otto pauses mid-task, gives you options, and carries on with your answer.</p></div>
+        <div class="step" data-i="3"><div class="n">04</div><h3>Nothing goes out without your OK.</h3><p>Posts and emails wait in a queue. Approve one and it opens ready to send, from your own accounts.</p></div>
+        <div class="step" data-i="4"><div class="n">05</div><h3>Publish in one press.</h3><p>Your site goes live on GitHub Pages under your own account, free. Or take the code anywhere.</p></div>
+      </div>
+      <div class="stage" id="stage">
+        <div class="scene on"><div class="glass">
+          <div class="chat-in"><span id="storyIdea">Mobile dog grooming van in San Jose</span><span class="go" style="width:34px;height:34px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="bub"><span class="otto sm"><i></i></span><p>On it. I'll start with your brand, then build the site. You'll see everything as I go.</p></div>
+        </div></div>
+        <div class="scene"><div class="glass"><div class="feed">
+          <div><span class="fi" style="background:linear-gradient(160deg,#5b95ff,#2453d6)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>Searching “mobile dog grooming San Jose prices”<span class="ok">✓</span></div>
+          <div><span class="fi" style="background:linear-gradient(160deg,#9aa1b4,#4d5465)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg></span>Reading a competitor's pricing page<span class="ok">✓</span></div>
+          <div><span class="fi" style="background:linear-gradient(160deg,#ff86bd,#d6336c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg></span>Writing the logo<span class="ok">✓</span></div>
+          <div><span class="fi" style="background:linear-gradient(160deg,#2ad6c9,#0b8f99)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="3" y="4" width="18" height="16" rx="2"/></svg></span>Writing the website<span class="spin"></span></div>
+        </div></div></div>
+        <div class="scene"><div class="glass ask-l">
+          <span class="otto"><i></i></span>
+          <p class="ey">Otto needs you</p>
+          <h4>Which pricing model do you prefer?</h4>
+          <div class="o pick"><kbd>1</kbd>Flat by size: $110 / $135 / $170</div>
+          <div class="o"><kbd>2</kbd>Premium by size: $130 / $160 / $200</div>
+          <div class="o"><kbd>3</kbd>Membership, about $120 a month</div>
+        </div></div>
+        <div class="scene"><div class="glass">
+          <div class="ap"><img src="examples/rinse-and-roam/posts/p2.svg" alt=""><div><span class="tag">X</span> <span class="tag w">Waiting for your OK</span><p>Most dogs don't hate baths. They hate the kennel, the loud dryers, and the wait. We're building a grooming van for San Jose that comes to your curb.</p></div></div>
+          <div class="ap-actions"><span>Skip</span><span class="a">Approve &amp; post</span></div>
+        </div></div>
+        <div class="scene"><div class="glass">
+          <div class="live-bar"><i></i>you.github.io/rinse-and-roam<span style="margin-left:auto;color:var(--ok);font-family:var(--sans);font-weight:600">Live</span></div>
+          <div class="thumb" id="thumb"><iframe data-site="1200" title="" tabindex="-1"></iframe></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="made" id="made">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow rv">What you get</div>
+      <h2 class="rv d1">Made for <em>your</em> business.</h2>
+      <p class="sub rv d2">Not templates. Everything below came out of one run on one line of idea, untouched.</p>
+    </div>
+    <div class="bento">
+      <div class="bc s4 rv"><h3>A real website.</h3><p>Specific copy, a hand-drawn illustration, no fake reviews.</p><div class="vis site-vis" id="siteVis"><iframe data-site="1200" title="Example website" tabindex="-1" loading="lazy"></iframe></div></div>
+      <div class="bc s2 rv d1"><h3>Your brand, day one.</h3><p>Logo, colors and fonts, used everywhere.</p><div class="vis brand-vis"><img src="examples/rinse-and-roam/logo.svg" alt="Rinse & Roam logo"><div class="sws"><i style="background:#0F5E6B"></i><i style="background:#F2B544"></i><i style="background:#E4572E"></i><i style="background:#FBF6EC"></i><i style="background:#1B2B30"></i></div><div class="fts"><div><b style="font-family:Fraunces,serif">Aa</b><span>Fraunces</span></div><div><b style="font-family:'DM Sans',sans-serif">Aa</b><span>DM Sans</span></div></div></div></div>
+      <div class="bc s2 rv"><h3>Posts with pictures.</h3><p>Written and pictured for each network.</p><div class="vis posts-vis"><img src="examples/rinse-and-roam/posts/p1.svg" alt="Launch card"><img src="examples/rinse-and-roam/posts/p2.svg" alt="Launch card"></div></div>
+      <div class="bc s2 rv d1"><h3>Research you can act on.</h3><p>What the market does, with its sources.</p><div class="vis res-vis"><h4>Snapshot</h4><ul><li>Several mobile groomers already list in San Jose, so you win on reliability and booking, not on being first <sup>2</sup></li><li>Market prices run about $75 to $350+; $110 to $170 sits mid-range <sup>4</sup> <sup>5</sup></li><li>The van is the big cost, roughly $55K to $130K <sup>6</sup></li></ul></div></div>
+      <div class="bc s2 rv d2"><h3>A deck when you need one.</h3><p>For a pitch, a partner or a bank.</p><div class="vis deck-vis" id="deckVis"><iframe data-deck="1280" title="Example deck" tabindex="-1" loading="lazy"></iframe></div></div>
+      <div class="bc s3 rv"><h3>Sheets that add up.</h3><p>Every assumption labelled, nothing hidden.</p><div class="vis sheet-vis"><table><thead><tr><th>Item</th><th style="text-align:right">USD</th></tr></thead><tbody><tr><td>Used grooming van</td><td class="n">60,000</td></tr><tr><td>Plumbing, power, generator</td><td class="n">8,000</td></tr><tr><td>Tools and tubs</td><td class="n">4,000</td></tr><tr><td>Insurance, first year</td><td class="n">4,000</td></tr><tr class="tot"><td>Monthly profit at full capacity <span style="color:var(--faint);font-weight:400">(estimate)</span></td><td class="n">5,550</td></tr></tbody></table></div></div>
+      <div class="bc s3 rv d1"><h3>Outreach to real people.</h3><p>Businesses he actually found. No guessed emails.</p><div class="vis mail-vis"><div class="h"><span class="otto xs"><i></i></span><b>A San Jose dog daycare</b><span class="tag w" style="margin-left:auto">Waiting for your OK</span></div><div class="sj">Overflow grooming for your members</div><p>I'm starting Rinse &amp; Roam, a mobile grooming van in San Jose. If your members are waitlisted for spa services, we could offer a curbside option or visit on set days.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="handled">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow rv">Under the hood</div>
+      <h2 class="rv d1">Everything handled. <em>Nothing</em> hidden.</h2>
+    </div>
+    <div class="hl">
+      <div class="rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg><h4>Runs on your machine</h4><p>One command starts it. There's no Garage server and no account to make.</p></div>
+      <div class="rv d1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg><h4>Powered by your Claude</h4><p>Otto is your own Claude Code, run headless. Pick Sonnet or Opus, and cap every run with a budget.</p></div>
+      <div class="rv d2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><h4>Sandboxed</h4><p>Otto can only touch that business's folder and can't run code. Your own settings and plugins never load.</p></div>
+      <div class="rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><h4>Plain files you own</h4><p>Every business is a folder: HTML, SVG, JSON, Markdown, CSV. Edit it, version it, take it anywhere.</p></div>
+      <div class="rv d1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h4>Free hosting</h4><p>Publish puts your site on GitHub Pages under your account. Bring a domain whenever you like.</p></div>
+      <div class="rv d2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L4 16.8V20h3.2l5.3-5.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg><h4>Fix it, as often as you like</h4><p>One button and Otto checks every file and repairs what's broken. No daily limit.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="compare" id="compare">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow rv">Compare</div>
+      <h2 class="rv d1">Same job. No <em>meter</em> running.</h2>
+      <p class="sub rv d2">Hosted AI employees charge every month for credits. Garage is yours.</p>
+    </div>
+    <div class="cmp">
+      <div class="plan rv">
+        <h3>Foundable Pro</h3>
+        <div class="price">$50<small> / month</small></div>
+        <p class="pn">500 credits a month. Max is $200.</p>
+        <ul>
+          <li>Website, brand, research, posts, outreach</li>
+          <li>Asks first before anything goes out</li>
+          <li>3 businesses at once</li>
+          <li>Answers your phone, runs ads, makes videos</li>
+          <li>Hosted in their cloud</li>
+          <li class="x">Not open source</li>
+        </ul>
+      </div>
+      <div class="plan us rv d1">
+        <h3><span class="otto sm"><i></i></span>Garage</h3>
+        <div class="price">$0<small> / forever</small></div>
+        <p class="pn">No credits. Runs on your own Claude.</p>
+        <ul>
+          <li>Website, brand, research, posts, outreach, deck, numbers</li>
+          <li>Asks you live, waits for your OK</li>
+          <li>Unlimited businesses</li>
+          <li>Your code and files, always</li>
+          <li>Runs on your computer</li>
+          <li>Open source, MIT</li>
+        </ul>
+      </div>
+    </div>
+    <p class="fine">Foundable plans from foundable.com/pricing, November 2026. Garage doesn't do phone, ads or video yet. Not affiliated with Foundable.</p>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap faq-grid">
+    <div><div class="eyebrow rv">FAQ</div><h2 class="rv d1">Questions, <em>answered</em>.</h2></div>
+    <div class="rv d1">
+      <details open><summary>Do I need to know how to code?</summary><p>No. You run one command to start it, then everything happens in the app: type your idea, watch, approve. You need <a href="https://nodejs.org">Node 20+</a> and <a href="https://docs.claude.com/en/docs/claude-code/setup">Claude Code</a> installed and signed in.</p></details>
+      <details><summary>What does it cost?</summary><p>Garage is free and always will be. Otto's work runs through your own Claude Code, so it uses your Claude plan or API key. The app shows what each run is worth at API prices (our full demo build: $0.43) and lets you cap every run.</p></details>
+      <details><summary>Which Claude do I need?</summary><p>Whatever you've signed in to Claude Code with. Garage never sees your login; it just runs your own Claude Code. Using a Claude plan with third-party tools is covered by <a href="https://www.anthropic.com/legal/aup">Anthropic's terms</a>, so give them a read.</p></details>
+      <details><summary>Does Otto send anything on his own?</summary><p>Never. He only drafts. When you approve a post or email, it opens in X, LinkedIn, Threads or your mail app with the text filled in, and you press send.</p></details>
+      <details><summary>Can Otto mess up my computer?</summary><p>He runs sandboxed: his file tools are locked to that business's folder, he can't run commands or code, and none of your own Claude Code settings, hooks or plugins load. He can search and read the web.</p></details>
+      <details><summary>Where do my files live?</summary><p>In <code>~/Documents/Garage</code>, one folder per business: <code>brand.json</code>, <code>logo.svg</code>, <code>site/</code>, <code>research.md</code>, <code>posts.json</code>, <code>outreach.json</code>, <code>deck.html</code>, <code>sheet.csv</code>.</p></details>
+      <details><summary>What can't it do yet?</summary><p>Answer a phone line, run ads, make videos, take payments, or take texts from your phone. Pull requests welcome.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">Your idea. <em>Otto's</em> afternoon.</h2>
+    <p class="sub rv d1">Open source, on your machine, and yours to keep.</p>
+    <div class="prompt rv d2">
+      <div class="prompt-row" style="margin:0">
+        <div class="cmd"><code><b>$ </b>npx github:hilothefunnydog123-coder/garage</code><button class="copy" data-copy="npx github:hilothefunnydog123-coder/garage">Copy</button></div>
+        <a class="go" href="https://github.com/hilothefunnydog123-coder/garage" aria-label="Open on GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+    <div class="mini-garage" aria-hidden="true"><div class="mini-door"></div><span class="otto"><i></i></span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="otto xs"><i></i></span>Garage</span>
+    <span>MIT licensed</span>
+    <a href="https://github.com/hilothefunnydog123-coder/garage">GitHub</a>
+    <span style="margin-left:auto">Not affiliated with Anthropic or Foundable. Claude is a trademark of Anthropic.</span>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const base = new URL('examples/rinse-and-roam/', location.href).href;
+
+// nav
+const nav = $('nav');
+const onScroll = () => nav.classList.toggle('scrolled', scrollY > 20);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+// copy
+document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; } catch { b.textContent = 'Select it'; }
+  setTimeout(() => { b.textContent = 'Copy'; }, 1600);
+}));
+
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+// hero prompt: cycles ideas like someone typing them
+const IDEAS = ['Mobile dog grooming van in San Jose', 'Small-batch hot sauce for farmers markets', 'A study planner app for high schoolers', 'Heavyweight hoodies for night-shift nurses', 'Weekend bike repair from my garage'];
+(async () => {
+  const el = $('heroPrompt');
+  if (reduce) { el.innerHTML = `<span class="ph">Tell Otto your idea…</span>`; return; }
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  for (let n = 0; ; n = (n + 1) % IDEAS.length) {
+    const t = IDEAS[n];
+    for (let i = 0; i <= t.length; i++) { el.innerHTML = `${t.slice(0, i).replace(/&/g, '&amp;').replace(/</g, '&lt;')}<span class="car"></span>`; await wait(38 + Math.random() * 40); }
+    await wait(1800);
+    for (let i = t.length; i >= 0; i -= 2) { el.innerHTML = `${t.slice(0, i).replace(/&/g, '&amp;').replace(/</g, '&lt;')}<span class="car"></span>`; await wait(14); }
+    await wait(300);
+  }
+})();
+
+// example files load as srcdoc so they render even inside embedded browsers
+const load = (file) => fetch(base + file).then(r => r.text()).then(t => t.replace(/<head[^>]*>/i, m => `${m}<base href="${base}" target="_blank">`)).catch(() => '');
+const siteReady = load('site.html');
+const deckReady = load('deck.html');
+function fit(frame) {
+  const w = Number(frame.dataset.site || frame.dataset.deck || 1000);
+  frame.style.width = `${w}px`;
+  frame.style.height = `${frame.dataset.deck ? 720 : Math.max(900, frame.parentElement.clientHeight * w / frame.parentElement.clientWidth)}px`;
+  frame.style.transform = `scale(${frame.parentElement.clientWidth / w})`;
+}
+const frames = [...document.querySelectorAll('iframe[data-site], iframe[data-deck]')];
+siteReady.then(html => frames.filter(f => f.dataset.site).forEach(f => { f.srcdoc = html; fit(f); }));
+deckReady.then(html => frames.filter(f => f.dataset.deck).forEach(f => { f.srcdoc = html; fit(f); }));
+const refit = new ResizeObserver(() => frames.forEach(fit));
+frames.forEach(f => refit.observe(f.parentElement));
+
+// story: the step crossing the middle of the screen drives the sticky scene
+const steps = [...document.querySelectorAll('.step')], scenes = [...document.querySelectorAll('.scene')];
+const storyIO = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const i = Number(e.target.dataset.i);
+  steps.forEach((s, k) => s.classList.toggle('on', k === i));
+  scenes.forEach((s, k) => s.classList.toggle('on', k === i));
+  if (i === 4) frames.filter(f => f.closest('#thumb')).forEach(fit);
+}), { rootMargin: '-45% 0px -45% 0px' });
+steps.forEach(s => storyIO.observe(s));
+
+// ---------- the garage: scroll rolls the door up, then Otto's real run replays inside ----------
+const garage = $('garage'), reveal = $('demo'), demo = $('demo-desk');
+const scaleDemo = () => { demo.style.transform = `scale(${garage.clientWidth / 1100})`; };
+scaleDemo(); addEventListener('resize', scaleDemo);
+let opened = false;
+function onReveal() {
+  const r = reveal.getBoundingClientRect();
+  const span = r.height - innerHeight;
+  const p = reduce ? 1 : Math.min(1, Math.max(0, (-r.top + innerHeight * .15) / (span * .55)));
+  garage.style.setProperty('--open', p.toFixed(3));
+  $('revealCap').style.opacity = String(1 - Math.min(1, p * 2.5));
+  if (p > .45 && !opened) { opened = true; token++; play(token); }
+}
+addEventListener('scroll', onReveal, { passive: true });
+
+const ICONS = {
+  chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>', search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>', layout: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/>',
+  sparkle: '<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>', heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>', deck: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/>',
+  grid: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/>', folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+};
+const DOCK = [['messages', 'chat', '#46e08f', '#13a55c'], ['research', 'search', '#5b95ff', '#2453d6'], ['browser', 'globe', '#9aa1b4', '#4d5465'], ['build', 'layout', '#2ad6c9', '#0b8f99'], ['brand', 'sparkle', '#ff86bd', '#d6336c'], ['social', 'heart', '#ff6b6b', '#c81e3a'], ['outreach', 'mail', '#4fd0ff', '#0b84d6'], ['deck', 'deck', '#ffd34d', '#f08c00'], ['sheets', 'grid', '#86e472', '#2f9e44'], ['files', 'folder', '#6bb3ff', '#1c6fe0']];
+$('dDock').innerHTML = DOCK.map(([id, ic, a, b]) => `<span data-app="${id}" style="background:linear-gradient(160deg,${a},${b})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICONS[ic]}</svg></span>`).join('');
+
+const PLAN = ['Brand: name, colors, fonts, logo', 'Website', 'Market research', 'Launch posts', 'First customers outreach', 'Pitch deck', 'Launch budget and numbers'];
+const SEARCHES = [
+  ['mobile dog grooming San Jose CA prices', [['Find a dog washer in your area', 'thumbtack.com'], ['Dog groomer costs in San Jose, CA', 'care.com'], ['44 Paws Mobile Grooming', 'thumbtack.com'], ['Golden Paws Grooming', 'thumbtack.com']]],
+  ['San Jose dog daycare OR rescue contact', [['Dogtopia of San Jose', 'dogtopia.com'], ['Furrtropolis San Jose', 'dogdog.org'], ['Animal Care Center, City of San José', 'sanjoseca.gov']]],
+];
+const POSTS = [
+  ['Instagram', 'p1.svg', 'Big news for San Jose dogs: Rinse & Roam is coming. A grooming van that parks at your curb. One dog at a time, no cages, no salon drop-off.'],
+  ['X', 'p2.svg', 'Most dogs don\'t hate baths. They hate the kennel, the loud dryers, and the wait. We\'re building a grooming van for San Jose that comes to your curb.'],
+];
+
+let token = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const hl = s => esc(s).replace(/(&lt;\/?)([a-zA-Z][\w-]*)/g, '$1<span class="t">$2</span>').replace(/\s([a-zA-Z-:]+)=(&quot;.*?&quot;)/g, ' <span class="a">$1</span>=<span class="s">$2</span>');
+const wins = { research: $('wResearch'), brand: $('wBrand'), build: $('wBuild'), social: $('wSocial') };
+let z = 10;
+
+function status(text) { $('dStatus').classList.add('on'); $('dStatusText').textContent = text; }
+function open(name) { const w = wins[name]; w.style.zIndex = ++z; w.classList.add('on'); }
+function busy(app) { document.querySelectorAll('#dDock span').forEach(s => s.classList.toggle('busy', s.dataset.app === app)); }
+function cursorTo(name, label, fx = .5, fy = .4) {
+  for (const [k, w] of Object.entries(wins)) w.classList.toggle('otto-on', k === name);
+  const w = wins[name];
+  const x = w.offsetLeft + w.offsetWidth * fx, y = w.offsetTop + Math.min(w.offsetHeight - 30, w.offsetHeight * fy);
+  const c = $('dCursor'); c.classList.add('on'); c.style.transform = `translate(${x}px, ${y}px)`;
+  $('dCursorLabel').textContent = label;
+  status(label);
+}
+function plan(i, state) {
+  const items = $('dPlanList').children;
+  if (items[i]) items[i].className = state;
+  $('dPlanCount').textContent = `${[...items].filter(x => x.className === 'done').length}/${PLAN.length}`;
+}
+function previewSite(html) {
+  const pv = $('pv');
+  pv.srcdoc = html;
+  pv.style.transform = `scale(${pv.parentElement.clientWidth / 1000})`;
+  pv.classList.add('on');
+}
+function reset() {
+  for (const w of Object.values(wins)) w.classList.remove('on', 'otto-on');
+  ['dPlan', 'dAsk', 'dToast', 'dCursor', 'dHand', 'dStatus'].forEach(id => $(id).classList.remove('on'));
+  $('dPlanList').innerHTML = PLAN.map(p => `<li><i class="t"></i>${p}</li>`).join('');
+  $('dPlanCount').textContent = `0/${PLAN.length}`;
+  $('research').innerHTML = ''; $('social').innerHTML = ''; $('code').innerHTML = ''; $('dCmd').textContent = '';
+  $('brandLogo').classList.remove('on'); $('sw').classList.remove('on');
+  $('pv').classList.remove('on'); $('pv').removeAttribute('srcdoc');
+  $('opt1').classList.remove('pick');
+  $('dName').textContent = 'Garage'; $('dMark').innerHTML = ''; $('dCost').textContent = '$0.00';
+  busy(null);
+}
+
+async function play(my) {
+  const alive = () => my === token;
+  reset();
+  const idea = 'Mobile dog grooming van in San Jose';
+  for (let i = 1; i <= idea.length; i++) { if (!alive()) return; $('dCmd').textContent = idea.slice(0, i); await sleep(40); }
+  await sleep(450); $('dCmd').textContent = '';
+  status('Otto is getting started'); await sleep(700);
+  $('dPlan').classList.add('on'); await sleep(600);
+  plan(2, 'doing'); open('research'); busy('research');
+  for (const [q, links] of SEARCHES) {
+    if (!alive()) return;
+    cursorTo('research', `Searching “${q}”`, .55, .3);
+    const box = document.createElement('div');
+    box.className = 'srch';
+    box.innerHTML = `<div class="srch-q pending">${esc(q)}</div>`;
+    $('research').prepend(box);
+    await sleep(1300);
+    box.firstChild.classList.remove('pending');
+    box.insertAdjacentHTML('beforeend', links.map(([t, h], k) => `<div class="lk" style="animation-delay:${k * 90}ms"><i></i><span>${esc(t)}</span><em>${h}</em></div>`).join(''));
+    await sleep(900);
+  }
+  if (!alive()) return;
+  plan(0, 'doing'); open('brand'); busy('brand');
+  cursorTo('brand', 'Writing the logo', .5, .3);
+  await sleep(700); $('brandLogo').classList.add('on');
+  $('dName').textContent = 'Rinse & Roam'; $('dMark').innerHTML = `<img src="${base}logo.svg" alt="">`;
+  await sleep(500); $('sw').classList.add('on');
+  await sleep(1200); plan(0, 'done');
+  if (!alive()) return;
+  plan(1, 'doing'); open('build'); busy('build');
+  cursorTo('build', 'Writing the website', .3, .5);
+  const html = await siteReady;
+  const src = html.replace(/<base[^>]*>/, '').slice(0, 2600);
+  for (let i = 0; i < src.length; i += 26) {
+    if (!alive()) return;
+    $('code').innerHTML = esc(src.slice(0, i)) + '<span class="caret"></span>';
+    $('code').scrollTop = 1e6;
+    await sleep(16);
+  }
+  $('code').innerHTML = hl(src);
+  previewSite(html);
+  cursorTo('build', 'The site is up', .75, .45);
+  await sleep(2000); plan(1, 'done'); plan(2, 'done');
+  if (!alive()) return;
+  status('Otto is waiting for your answer');
+  $('dCursor').classList.remove('on');
+  $('dAsk').classList.add('on');
+  await sleep(1400);
+  const hand = $('dHand'), opt = $('opt1');
+  hand.style.transform = 'translate(760px, 430px)';
+  hand.classList.add('on');
+  await sleep(60);
+  const card = opt.offsetParent;
+  hand.style.transform = `translate(${card.offsetLeft + opt.offsetLeft + 90}px, ${card.offsetTop + opt.offsetTop + 10}px)`;
+  await sleep(1000); opt.classList.add('pick');
+  await sleep(450); $('dAsk').classList.remove('on'); hand.classList.remove('on');
+  if (!alive()) return;
+  plan(3, 'doing'); open('social'); busy('social');
+  cursorTo('social', 'Writing launch posts', .5, .35);
+  for (const [net, img, text] of POSTS) {
+    $('social').insertAdjacentHTML('beforeend', `<div class="post"><img src="${base}posts/${img}" alt=""><div><div class="row"><span class="net">${net}</span><span class="pend">pending</span></div><p>${esc(text)}</p></div></div>`);
+    await sleep(900);
+  }
+  plan(3, 'done');
+  for (const i of [4, 5, 6]) { plan(i, 'doing'); status(['Finding first customers', 'Making the pitch deck', 'Running the numbers'][i - 4]); busy(['outreach', 'deck', 'sheets'][i - 4]); await sleep(650); plan(i, 'done'); }
+  $('dStatus').classList.remove('on'); $('dCursor').classList.remove('on'); busy(null);
+  for (const w of Object.values(wins)) w.classList.remove('otto-on');
+  $('dCost').textContent = '$0.43';
+  $('dToast').classList.add('on');
+  await sleep(4500);
+  if (alive()) play(token);
+}
+
+reset();
+if (reduce) {
+  siteReady.then(html => { open('build'); previewSite(html); $('code').innerHTML = hl(html.replace(/<base[^>]*>/, '').slice(0, 2000)); $('dPlan').classList.add('on'); });
+} else {
+  onReveal();
+  // Pause the replay while it's off screen; restart it when the garage comes back into view.
+  new IntersectionObserver(([e]) => { if (!e.isIntersecting) { token++; } else if (opened) { token++; play(token); } }, { threshold: .2 }).observe(garage);
+}
+</script>
+</body>
+</html>

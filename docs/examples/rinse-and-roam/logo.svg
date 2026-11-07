@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" role="img" aria-label="Rinse &amp; Roam">
+  <circle cx="50" cy="50" r="46" fill="#0F5E6B"/>
+  <g fill="#FBF6EC">
+    <ellipse cx="50" cy="62" rx="17" ry="14"/>
+    <ellipse cx="28" cy="44" rx="7" ry="9" transform="rotate(-20 28 44)"/>
+    <ellipse cx="42" cy="30" rx="7" ry="9.5" transform="rotate(-6 42 30)"/>
+    <ellipse cx="58" cy="30" rx="7" ry="9.5" transform="rotate(6 58 30)"/>
+    <ellipse cx="72" cy="44" rx="7" ry="9" transform="rotate(20 72 44)"/>
+  </g>
+  <circle cx="50" cy="62" r="5" fill="#F2B544"/>
+  <text x="112" y="58" font-family="Fraunces, Georgia, serif" font-size="40" font-weight="700" fill="#1B2B30">Rinse <tspan fill="#E4572E">&amp;</tspan> Roam</text>
+  <text x="114" y="82" font-family="'DM Sans', Arial, sans-serif" font-size="14" letter-spacing="3.5" fill="#0F5E6B">MOBILE DOG GROOMING</text>
+</svg>

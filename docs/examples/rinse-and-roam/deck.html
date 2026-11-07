@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rinse &amp; Roam: Pitch deck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Fraunces:opsz,wght@9..144,700;9..144,900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#111;font-family:'DM Sans',sans-serif;color:#1B2B30}
+.slide{width:100vw;height:56.25vw;max-height:100vh;max-width:177.78vh;margin:0 auto;display:none;flex-direction:column;justify-content:center;padding:6vw 7vw;background:#FBF6EC;font-size:1.7vw;line-height:1.5;position:relative}
+.slide.on{display:flex}
+h1,h2{font-family:'Fraunces',serif;font-weight:900;line-height:1.05;color:#0F5E6B}
+h1{font-size:6.4vw}h2{font-size:4vw;margin-bottom:2vw}
+.dark{background:#0F5E6B;color:#FBF6EC}.dark h1,.dark h2{color:#FBF6EC}.dark em{color:#F2B544;font-style:normal}
+ul{margin-left:1.6em}li{margin-bottom:.7em}
+.big{font:900 5vw 'Fraunces',serif;color:#E4572E}
+.cols{display:flex;gap:3vw}.cols>div{flex:1;background:#fff;border:2px solid #e5dcc8;border-radius:1.4vw;padding:2vw}
+small{font-size:1.1vw;opacity:.8;position:absolute;bottom:2vw;left:7vw;right:7vw}
+.logo{position:absolute;top:2vw;left:7vw;height:4vw}
+@media print{@page{size:landscape;margin:0}body{background:#fff}.slide{display:flex!important;width:100vw;height:100vh;max-width:none;max-height:none;page-break-after:always;break-after:page}}
+</style></head><body>
+<section class="slide dark"><h1>Rinse &amp; Roam</h1><p style="font-size:2.6vw;margin-top:2vw">The <em>spa pulls up to your curb.</em> Mobile dog grooming for San Jose.</p></section>
+<section class="slide"><h2>The problem</h2><ul><li>Salon grooming means drop-off windows, car rides and hours in a kennel.</li><li>Anxious, senior and large dogs suffer most.</li><li>Busy owners lose half a day to a bath.</li></ul></section>
+<section class="slide"><h2>The solution</h2><p>A climate-controlled grooming van that parks outside the customer's home. One dog at a time, with its own water and power. Bath, blow dry, trim and nails, then the dog walks back inside.</p></section>
+<section class="slide"><h2>Who it's for</h2><div class="cols"><div><b>Busy households</b><br>Want their time back.</div><div><b>Anxious, senior and large dogs</b><br>Do better without kennels.</div><div><b>Rescues and daycares</b><br>Need reliable grooming partners.</div></div></section>
+<section class="slide"><h2>How it works</h2><ul><li>Owner tells us about the dog and picks a curbside window.</li><li>We text when the van is minutes away.</li><li>Groom takes place in the van; payment is taken at the curb or online.</li></ul></section>
+<section class="slide"><h2>Market</h2><p>The U.S. pet industry reached about $158B in 2025, projected $165B in 2026 (APPA). Several mobile groomers already serve San Jose, so we compete on experience and reliability. Benchmarks: $75 average (HomeGuide) up to $120 to $350+ (Barkbus).</p><small>Sources: research.md [1], [4], [5]. A grooming-only market size was not found.</small></section>
+<section class="slide"><h2>Business model</h2><div class="cols"><div><span class="big">$110</span><br>Small, from</div><div><span class="big">$135</span><br>Medium, from</div><div><span class="big">$170</span><br>Large, from</div></div><p style="margin-top:2vw">Estimate: 5 grooms a day at $135 is about $13.5K a month at full capacity, with about $5.5K a month profit after costs.</p><small>Estimates from sheet.csv, not forecasts.</small></section>
+<section class="slide"><h2>Go-to-market</h2><ul><li>Waitlist site and local launch posts (Nextdoor, Instagram, Reddit).</li><li>Partnerships with daycares, rescues and vets for referrals.</li><li>Neighborhood route days to keep drive time low.</li></ul></section>
+<section class="slide dark"><h2>The ask</h2><p>Estimated startup need: about $93K, mostly the van (estimate, see sheet.csv). Seeking funding, a used van or trailer lead, and introductions to San Jose daycares and rescues.</p></section>
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+function show(n){i=Math.max(0,Math.min(s.length-1,n));s.forEach((x,k)=>x.classList.toggle('on',k===i))}
+document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key))show(i+1);if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key))show(i-1)});
+document.addEventListener('click',e=>show(e.clientX<innerWidth/4?i-1:i+1));
+show(0);
+</script></body></html>

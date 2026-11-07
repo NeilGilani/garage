@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Garage</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="biz-switch" id="bizSwitch" aria-haspopup="menu">
+      <span class="biz-mark" id="bizMark"></span>
+      <span class="biz-name" id="bizName">Garage</span>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="status" id="status" hidden>
+      <span class="pulse"></span>
+      <span class="status-text" id="statusText">Otto is working</span>
+      <span class="status-time" id="statusTime">0:00</span>
+      <button class="status-stop" id="stopBtn">Stop</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="meter" id="meter" title="What this business's work would cost at Claude API prices. On a Claude plan it uses your plan instead.">
+      <span class="meter-k">API value</span><b id="meterApi">$0.00</b>
+      <span class="meter-sep paid"></span>
+      <span class="meter-k paid">You pay</span><b class="free paid">$0</b>
+    </div>
+    <div class="clock" id="clock"></div>
+  </header>
+
+  <main class="desktop" id="desktop">
+    <aside class="plan" id="plan" hidden></aside>
+    <section class="center" id="center"></section>
+    <div class="windows" id="windows"></div>
+    <div class="cursor" id="cursor" hidden><span class="otto otto-xs"><i></i></span><span class="cursor-label" id="cursorLabel"></span></div>
+    <div class="ask-layer" id="askLayer" hidden></div>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+  </main>
+
+  <footer class="bottom">
+    <form class="command" id="command" hidden>
+      <span class="otto otto-xs"><i></i></span>
+      <input id="commandInput" placeholder="Tell Otto what to do…" autocomplete="off" aria-label="Message Otto">
+      <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </form>
+    <nav class="dock" id="dock" hidden></nav>
+  </footer>
+
+  <div class="menu" id="bizMenu" role="menu" hidden></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
